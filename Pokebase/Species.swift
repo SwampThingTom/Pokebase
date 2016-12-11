@@ -8,15 +8,6 @@
 
 import Foundation
 
-extension Dictionary {
-    init(_ pairs: [Element]) {
-        self.init()
-        for (k, v) in pairs {
-            self[k] = v
-        }
-    }
-}
-
 struct Species {
     
     /// Names of all of the known species.

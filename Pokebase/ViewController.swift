@@ -44,7 +44,7 @@ class ViewController: NSViewController, NSComboBoxDataSource {
         resultLabel?.stringValue = statusString(forIVs: possibleIVs)
     }
     
-    func statusString(forIVs ivs: [(level: Double, att: Int, def: Int, sta: Int)]) -> String {
+    func statusString(forIVs ivs: [IndividualValues]) -> String {
         let combinations = ivs.count
         
         if combinations == 0 {

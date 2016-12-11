@@ -14,6 +14,7 @@
 		E2ED372E1DFC52FB00705551 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2ED372C1DFC52FB00705551 /* Main.storyboard */; };
 		E2ED37391DFC52FB00705551 /* PokebaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37381DFC52FB00705551 /* PokebaseTests.swift */; };
 		E2ED37441DFC52FB00705551 /* PokebaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37431DFC52FB00705551 /* PokebaseUITests.swift */; };
+		E2ED37521DFC727400705551 /* Species.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37511DFC727400705551 /* Species.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		E2ED373F1DFC52FB00705551 /* PokebaseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokebaseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2ED37431DFC52FB00705551 /* PokebaseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokebaseUITests.swift; sourceTree = "<group>"; };
 		E2ED37451DFC52FB00705551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2ED37511DFC727400705551 /* Species.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Species.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			children = (
 				E2ED37231DFC52FB00705551 /* AppDelegate.swift */,
 				E2ED37251DFC52FB00705551 /* ViewController.swift */,
+				E2ED37511DFC727400705551 /* Species.swift */,
 				E2ED372A1DFC52FB00705551 /* Assets.xcassets */,
 				E2ED372C1DFC52FB00705551 /* Main.storyboard */,
 				E2ED372F1DFC52FB00705551 /* Info.plist */,
@@ -194,7 +197,7 @@
 					E2ED371F1DFC52FB00705551 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = AF4K9VYVA5;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					E2ED37331DFC52FB00705551 = {
 						CreatedOnToolsVersion = 8.0;
@@ -261,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2ED37521DFC727400705551 /* Species.swift in Sources */,
 				E2ED37261DFC52FB00705551 /* ViewController.swift in Sources */,
 				E2ED37241DFC52FB00705551 /* AppDelegate.swift in Sources */,
 				E2ED37291DFC52FB00705551 /* Pokebase.xcdatamodeld in Sources */,

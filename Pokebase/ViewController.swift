@@ -32,10 +32,9 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
     }
     
     @IBAction func calculateIVs(sender: NSButton) {
-        guard let pokémon = newPokémon() else {
+        guard let pokémon = newPokémon(), let possibleIVs = pokémon.possibleIVs else {
             return
         }
-        let possibleIVs = pokémon.possibleIVs()
         resultLabel?.stringValue = statusString(forIVs: possibleIVs)
     }
     
@@ -57,7 +56,9 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
         }
         
         let species = Species.names[pokémonIndex]
-        return Pokémon(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: false)
+        var pokémon = Pokémon(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: false)
+        pokémon.derivePossibleIVs()
+        return pokémon
     }
     
     private func statusString(forIVs ivs: [IndividualValues]) -> String {

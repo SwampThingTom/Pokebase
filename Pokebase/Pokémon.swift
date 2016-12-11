@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias IndividualValues = (level: Double, att: Int, def: Int, sta: Int)
+typealias IndividualValues = (level: Double, atk: Int, def: Int, sta: Int)
 
 struct Pokémon {
     
@@ -18,7 +18,31 @@ struct Pokémon {
     let dustPrice: Int
     let poweredUp: Bool
     
-    private let baseATT: Int
+    var level: Int?
+    var atk: Int?
+    var def: Int?
+    var sta: Int?
+    
+    var ivPercent: Int? {
+        guard let atk = atk, let def = def, let sta = sta else {
+            return nil
+        }
+        return Int(round(Double(atk + def + sta) / 45.0))
+    }
+    
+    var perfectCP: Int? {
+        return nil
+    }
+    
+    var poweredUpCP: Int? {
+        return nil
+    }
+    
+    var maxCP: Int? {
+        return nil
+    }
+    
+    private let baseATK: Int
     private let baseDEF: Int
     private let baseSTA: Int
     
@@ -30,11 +54,11 @@ struct Pokémon {
         self.poweredUp = poweredUp
         
         if let baseStats = Species.baseStats(forSpecies: species) {
-            self.baseATT = baseStats.att
+            self.baseATK = baseStats.atk
             self.baseDEF = baseStats.def
             self.baseSTA = baseStats.sta
         } else {
-            self.baseATT = 0
+            self.baseATK = 0
             self.baseDEF = 0
             self.baseSTA = 0
         }
@@ -57,10 +81,10 @@ struct Pokémon {
         let possibleSTAs = self.possibleSTAs(level: level)
         for sta in possibleSTAs {
             for def in 0...15 {
-                for att in 0...15 {
-                    let possibleCP = self.calcCP(forLevel: level, att: att, def: def, sta: sta)
+                for atk in 0...15 {
+                    let possibleCP = self.calcCP(forLevel: level, atk: atk, def: def, sta: sta)
                     if possibleCP == cp {
-                        possibleIVs.append((level: level, att: att, def: def, sta: sta))
+                        possibleIVs.append((level: level, atk: atk, def: def, sta: sta))
                     }
                 }
             }
@@ -78,14 +102,14 @@ struct Pokémon {
         return (0...15).filter( { return self.calcHP(forLevel: level, sta: $0) == hp } )
     }
     
-    private func calcCP(forLevel level: Double, att: Int, def: Int, sta: Int) -> Int {
+    private func calcCP(forLevel level: Double, atk: Int, def: Int, sta: Int) -> Int {
         guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
             return 0
         }
-        let actualAtt = Double(getAtt(attIv: att))
-        let actualDef = Double(getDef(defIv: def))
-        let actualSta = Double(getSta(staIv: sta))
-        let cp = (actualAtt * pow(actualDef, 0.5) * pow(actualSta, 0.5) * pow(cpMultiplier, 2)) / 10
+        let actualAtk = Double(getATK(atkIv: atk))
+        let actualDef = Double(getDEF(defIv: def))
+        let actualSta = Double(getSTA(staIv: sta))
+        let cp = (actualAtk * pow(actualDef, 0.5) * pow(actualSta, 0.5) * pow(cpMultiplier, 2)) / 10
         return max(10, Int(floor(cp)))
     }
     
@@ -93,19 +117,19 @@ struct Pokémon {
         guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
             return 0
         }
-        let hp = Double(getSta(staIv: sta)) * cpMultiplier
+        let hp = Double(getSTA(staIv: sta)) * cpMultiplier
         return max(10, Int(floor(hp)))
     }
     
-    private func getAtt(attIv: Int) -> Int {
-        return baseATT + attIv
+    private func getATK(atkIv: Int) -> Int {
+        return baseATK + atkIv
     }
     
-    private func getDef(defIv: Int) -> Int {
+    private func getDEF(defIv: Int) -> Int {
         return baseDEF + defIv
     }
     
-    private func getSta(staIv: Int) -> Int {
+    private func getSTA(staIv: Int) -> Int {
         return baseSTA + staIv
     }
 }

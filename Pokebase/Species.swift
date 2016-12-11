@@ -32,11 +32,11 @@ struct Species {
     /// - parameter species: Pokémon species
     ///
     /// - returns: base attack, defense, and stamina values
-    static func baseStats(forSpecies species: String) -> (att: Int, def: Int, sta: Int)? {
+    static func baseStats(forSpecies species: String) -> (atk: Int, def: Int, sta: Int)? {
         guard let data = baseStats[species] else {
             return nil
         }
-        return (att: data.att, def: data.def, sta: data.sta)
+        return (atk: data.atk, def: data.def, sta: data.sta)
     }
     
     // MARK: - Base Stats
@@ -195,7 +195,7 @@ struct Species {
         ("Mew",210,210,200,nil)];
     
     private static let baseStats = {
-        return Dictionary(gen1Data.map { data in (data.0, (att: data.1, def: data.2, sta: data.3, evolution: data.4)) })
+        return Dictionary(gen1Data.map { data in (data.0, (atk: data.1, def: data.2, sta: data.3, evolution: data.4)) })
     }()
     
     // MARK: - Levels

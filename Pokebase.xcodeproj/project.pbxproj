@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E274B1611DFDA28700160096 /* Pokémon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E274B1601DFDA28700160096 /* Pokémon.swift */; };
 		E2ED37241DFC52FB00705551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37231DFC52FB00705551 /* AppDelegate.swift */; };
 		E2ED37261DFC52FB00705551 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37251DFC52FB00705551 /* ViewController.swift */; };
 		E2ED37291DFC52FB00705551 /* Pokebase.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37271DFC52FB00705551 /* Pokebase.xcdatamodeld */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E274B1601DFDA28700160096 /* Pokémon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Pokémon.swift"; sourceTree = "<group>"; };
 		E2ED37201DFC52FB00705551 /* Pokebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pokebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2ED37231DFC52FB00705551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E2ED37251DFC52FB00705551 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				E2ED372C1DFC52FB00705551 /* Main.storyboard */,
 				E2ED372F1DFC52FB00705551 /* Info.plist */,
 				E2ED37271DFC52FB00705551 /* Pokebase.xcdatamodeld */,
+				E274B1601DFDA28700160096 /* Pokémon.swift */,
 			);
 			path = Pokebase;
 			sourceTree = "<group>";
@@ -264,6 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E274B1611DFDA28700160096 /* Pokémon.swift in Sources */,
 				E2ED37521DFC727400705551 /* Species.swift in Sources */,
 				E2ED37261DFC52FB00705551 /* ViewController.swift in Sources */,
 				E2ED37241DFC52FB00705551 /* AppDelegate.swift in Sources */,
@@ -513,6 +517,7 @@
 				E2ED374A1DFC52FB00705551 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E2ED374B1DFC52FB00705551 /* Build configuration list for PBXNativeTarget "PokebaseTests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +526,7 @@
 				E2ED374D1DFC52FB00705551 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E2ED374E1DFC52FB00705551 /* Build configuration list for PBXNativeTarget "PokebaseUITests" */ = {
 			isa = XCConfigurationList;
@@ -529,6 +535,7 @@
 				E2ED37501DFC52FB00705551 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

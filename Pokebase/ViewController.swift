@@ -38,8 +38,8 @@ class ViewController: NSViewController, NSComboBoxDataSource {
         }
         
         let species = Species.names[pokémonIndex]
-        let pokémon = Species(species: species)
-        let possibleIVs = pokémon.possibleIVs(cp: cp, hp: hp, dustPrice: dust, poweredUp: false)
+        let pokémon = Pokémon(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: false)
+        let possibleIVs = pokémon.possibleIVs()
         
         resultLabel?.stringValue = statusString(forIVs: possibleIVs)
     }

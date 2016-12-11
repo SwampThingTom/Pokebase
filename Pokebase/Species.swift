@@ -19,6 +19,35 @@ extension Dictionary {
 
 struct Species {
     
+    /// Names of all of the known species.
+    static let names: [String] = {
+        return gen1Data.map { data in data.0 }
+    }()
+    
+    /// Map of power-up stardust cost to minimum Pokémon level.
+    static let levelForStardust: [Int:Double] = {
+        return Dictionary(levels)
+    }()
+    
+    
+    /// Map of Pokémon level to CP multiplier.
+    static let cpMultiplierForLevel: [Double:Double] = {
+        return Dictionary(cpMultipliers)
+    }()
+    
+    
+    /// Base statistics for a Pokémon species.
+    ///
+    /// - parameter species: Pokémon species
+    ///
+    /// - returns: base attack, defense, and stamina values
+    static func baseStats(forSpecies species: String) -> (att: Int, def: Int, sta: Int)? {
+        guard let data = baseStats[species] else {
+            return nil
+        }
+        return (att: data.att, def: data.def, sta: data.sta)
+    }
+    
     // MARK: - Base Stats
     
     private static let gen1Data: Array<(String,Int,Int,Int,String?)> = [
@@ -178,10 +207,6 @@ struct Species {
         return Dictionary(gen1Data.map { data in (data.0, (att: data.1, def: data.2, sta: data.3, evolution: data.4)) })
     }()
     
-    static let names = {
-        return gen1Data.map { data in data.0 }
-    }()
-    
     // MARK: - Levels
     
     private static let levels: Array<(Int,Double)> = [
@@ -206,10 +231,6 @@ struct Species {
         (9000, 37),
         (10000, 39)
     ]
-    
-    private static let levelFromStardust = {
-        return Dictionary(levels)
-    }()
     
     // MARK: - CP Multiplier
     
@@ -295,94 +316,4 @@ struct Species {
         (40, 0.7903000),
         (40.5, 0.7931164)
     ]
-    
-    private static let cpMultiplierForLevel = {
-        return Dictionary(cpMultipliers)
-    }()
-    
-    // MARK: - Instance Properties
-    
-    let species: String
-    
-    init(species: String) {
-        self.species = species
-    }
-    
-    func possibleIVs(cp: Int, hp: Int, dustPrice: Int, poweredUp: Bool) -> [(level: Double, att: Int, def: Int, sta: Int)] {
-        let minLevel = Species.levelFromStardust[dustPrice]!
-        let maxLevel = minLevel + 1.5
-        
-        var possibleIVs = [(level: Double, att: Int, def: Int, sta: Int)]()
-        for level in stride(from: minLevel, to: maxLevel, by: poweredUp ? 0.5 : 1.0 ) {
-            possibleIVs.append(contentsOf: self.possibleIVs(level: level, cp: cp, hp: hp))
-        }
-        
-        return possibleIVs
-    }
-    
-    private func possibleIVs(level: Double, cp: Int, hp: Int) -> [(level: Double, att: Int, def: Int, sta: Int)] {
-        var possibleIVs = [(level: Double, att: Int, def: Int, sta: Int)]()
-        let possibleStaminas = self.possibleStaminas(level: level, hp: hp)
-        for sta in possibleStaminas {
-            for def in 0...15 {
-                for att in 0...15 {
-                    let possibleCp = self.calcCP(forLevel: level, att: att, def: def, sta: sta)
-                    if possibleCp == cp {
-                        possibleIVs.append((level: level, att: att, def: def, sta: sta))
-                    }
-                }
-            }
-        }
-        return possibleIVs
-    }
-    
-    private func possibleStaminas(level: Double, hp: Int) -> [Int] {
-        let minHp = self.calcHP(forLevel: level, sta: 0)
-        let maxHp = self.calcHP(forLevel: level, sta: 15)
-        if hp < minHp || hp > maxHp {
-            return []
-        }
-        
-        return (0...15).filter( { return self.calcHP(forLevel: level, sta: $0) == hp } )
-    }
-    
-    private func calcCP(forLevel level: Double, att: Int, def: Int, sta: Int) -> Int {
-        guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
-            return 0
-        }
-        let actualAtt = Double(getAtt(level: level, attIv: att))
-        let actualDef = Double(getDef(level: level, defIv: def))
-        let actualSta = Double(getSta(level: level, staIv: sta))
-        let cp = (actualAtt * pow(actualDef, 0.5) * pow(actualSta, 0.5) * pow(cpMultiplier, 2)) / 10
-        return max(10, Int(floor(cp)))
-    }
-    
-    private func calcHP(forLevel level: Double, sta: Int) -> Int {
-        guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
-            return 0
-        }
-        let hp = Double(getSta(level: level, staIv: sta)) * cpMultiplier
-        return max(10, Int(floor(hp)))
-    }
-    
-    private func getAtt(level: Double, attIv: Int) -> Int {
-        guard let baseAtt = Species.baseStats[self.species]?.att else {
-            return 0
-        }
-        return baseAtt + attIv
-    }
-    
-    private func getDef(level: Double, defIv: Int) -> Int {
-        guard let baseDef = Species.baseStats[self.species]?.def else {
-            return 0
-        }
-        return baseDef + defIv
-    }
-    
-    private func getSta(level: Double, staIv: Int) -> Int {
-        guard let baseSta = Species.baseStats[self.species]?.sta else {
-            return 0
-        }
-        return baseSta + staIv
-    }
 }

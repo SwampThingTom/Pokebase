@@ -52,6 +52,18 @@ struct IVCalculator {
         return possibleIVs
     }
     
+    func calcCP(forLevel level: Double, atk: Int, def: Int, sta: Int) -> Int {
+        guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
+            return 0
+        }
+        
+        let actualAtk = Double(getATK(atkIv: atk))
+        let actualDef = Double(getDEF(defIv: def))
+        let actualSta = Double(getSTA(staIv: sta))
+        let cp = (actualAtk * pow(actualDef, 0.5) * pow(actualSta, 0.5) * pow(cpMultiplier, 2)) / 10
+        return max(10, Int(floor(cp)))
+    }
+    
     private func possibleIVsForLevel(_ level: Double) -> [IndividualValues] {
         var possibleIVs = [IndividualValues]()
         let possibleSTAs = self.possibleSTAs(level: level)
@@ -76,18 +88,6 @@ struct IVCalculator {
         }
         
         return IVCalculator.ivRange.filter( { return self.calcHP(forLevel: level, sta: $0) == hp } )
-    }
-    
-    private func calcCP(forLevel level: Double, atk: Int, def: Int, sta: Int) -> Int {
-        guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
-            return 0
-        }
-        
-        let actualAtk = Double(getATK(atkIv: atk))
-        let actualDef = Double(getDEF(defIv: def))
-        let actualSta = Double(getSTA(staIv: sta))
-        let cp = (actualAtk * pow(actualDef, 0.5) * pow(actualSta, 0.5) * pow(cpMultiplier, 2)) / 10
-        return max(10, Int(floor(cp)))
     }
     
     private func calcHP(forLevel level: Double, sta: Int) -> Int {

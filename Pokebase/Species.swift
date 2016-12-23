@@ -22,12 +22,10 @@ struct Species {
         return Dictionary(levels)
     }()
     
-    
     /// Map of Pokémon level to CP multiplier.
     static let cpMultiplierForLevel: [Double:Double] = {
         return Dictionary(cpMultipliers)
     }()
-    
     
     /// Base statistics for a Pokémon species.
     ///
@@ -39,6 +37,21 @@ struct Species {
             return nil
         }
         return (atk: data.atk, def: data.def, sta: data.sta)
+    }
+    
+    /// The final evolution for a Pokémon species.
+    ///
+    /// - parameter species: Pokémon species
+    ///
+    /// - returns: final evolution species
+    static func finalEvolution(forSpecies species: String) -> String? {
+        guard let data = baseStats[species] else {
+            return nil
+        }
+        guard let evolution = data.evolution else {
+            return species
+        }
+        return finalEvolution(forSpecies: evolution)
     }
     
     // MARK: - Base Stats

@@ -155,10 +155,11 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
             return "\(sta)"
             
         case "PercentColumn":
-            guard let ivPercent = thisPokémon.ivPercent else {
-                return ""
+            if let ivPercent = thisPokémon.ivPercent {
+                return "\(ivPercent)"
             }
-            return "\(ivPercent)"
+            let range = thisPokémon.ivPercentRange
+            return "\(range.min) - \(range.max)"
             
         case "PerfectCPColumn":
             guard let perfectCP = thisPokémon.perfectCP else {

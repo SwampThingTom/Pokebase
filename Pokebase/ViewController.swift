@@ -18,7 +18,7 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
     @IBOutlet weak var resultLabel: NSTextField?
     @IBOutlet weak var tableView: NSTableView?
     
-    private var savedPokémon = [Pokémon]()
+    private var savedPokémon = PokémonBox()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,21 +32,24 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
     }
     
     @IBAction func calculateIVs(sender: NSButton) {
-        guard let pokémon = newPokémon(), let possibleIVs = pokémon.possibleIVs else {
+        guard let ivCalculator = ivCalculator() else {
             return
         }
+        let possibleIVs = ivCalculator.derivePossibleIVs()
         resultLabel?.stringValue = statusString(forIVs: possibleIVs)
     }
     
     @IBAction func savePokémon(sender: NSButton) {
-        guard let pokémon = newPokémon() else {
+        guard let ivCalculator = ivCalculator() else {
             return
         }
-        savedPokémon.append(pokémon)
+        
+        let pokémon = Pokémon(ivCalculator)
+        savedPokémon.add(pokémon)
         self.tableView?.reloadData()
     }
     
-    private func newPokémon() -> Pokémon? {
+    private func ivCalculator() -> IVCalculator? {
         guard let pokémonIndex = pokémonField?.indexOfSelectedItem,
             let cp = cpField?.integerValue,
             let hp = hpField?.integerValue,
@@ -56,9 +59,8 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
         }
         
         let species = Species.names[pokémonIndex]
-        var pokémon = Pokémon(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: false)
-        pokémon.derivePossibleIVs()
-        return pokémon
+        let calculator = IVCalculator(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: false)
+        return calculator
     }
     
     private func statusString(forIVs ivs: [IndividualValues]) -> String {

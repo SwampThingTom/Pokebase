@@ -8,6 +8,8 @@
 
 import Foundation
 
+typealias IndividualValues = (level: Double, atk: Int, def: Int, sta: Int)
+
 struct Species {
     
     /// Names of all of the known species.

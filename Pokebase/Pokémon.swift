@@ -8,53 +8,48 @@
 
 import Foundation
 
-typealias IndividualValues = (level: Double, atk: Int, def: Int, sta: Int)
-
-struct Pokémon {
-    
-    static let ivRange = 0...15
+struct Pokémon: Equatable {
     
     let species: String
     let cp: Int
     let hp: Int
     let dustPrice: Int
     let poweredUp: Bool
-    
-    var possibleIVs: [IndividualValues]?
+    let ivs: IndividualValues?
     
     var level: Double? {
-        guard let possibleIVs = self.possibleIVs else {
+        guard let ivs = ivs else {
             return nil
         }
-        return possibleIVs.count == 1 ? possibleIVs[0].level : nil
+        return ivs.level
     }
     
     var atk: Int? {
-        guard let possibleIVs = self.possibleIVs else {
+        guard let ivs = ivs else {
             return nil
         }
-        return possibleIVs.count == 1 ? possibleIVs[0].atk : nil
+        return ivs.atk
     }
     
     var def: Int? {
-        guard let possibleIVs = self.possibleIVs else {
+        guard let ivs = ivs else {
             return nil
         }
-        return possibleIVs.count == 1 ? possibleIVs[0].def : nil
+        return ivs.def
     }
 
     var sta: Int? {
-        guard let possibleIVs = self.possibleIVs else {
+        guard let ivs = ivs else {
             return nil
         }
-        return possibleIVs.count == 1 ? possibleIVs[0].sta : nil
+        return ivs.sta
     }
 
     var ivPercent: Int? {
-        guard let atk = atk, let def = def, let sta = sta else {
+        guard let ivs = ivs else {
             return nil
         }
-        return Int(round(100.0 * Double(atk + def + sta) / 45.0))
+        return Int(round(100.0 * Double(ivs.atk + ivs.def + ivs.sta) / 45.0))
     }
     
     var perfectCP: Int? {
@@ -69,98 +64,70 @@ struct Pokémon {
         return nil
     }
     
-    private let baseATK: Int
-    private let baseDEF: Int
-    private let baseSTA: Int
+    init(_ pokémon: IVCalculator) {
+        self.species = pokémon.species
+        self.cp = pokémon.cp
+        self.hp = pokémon.hp
+        self.dustPrice = pokémon.dustPrice
+        self.poweredUp = pokémon.poweredUp
+        
+        let ivs = pokémon.derivePossibleIVs()
+        self.ivs = ivs.count == 1 ? ivs[0] : nil
+    }
     
-    init(species: String, cp: Int, hp: Int, dustPrice: Int, poweredUp: Bool) {
+    init?(json: [String: Any]) {
+        guard let species = json["species"] as? String,
+            let cp = json["cp"] as? Int,
+            let hp = json["hp"] as? Int,
+            let dustPrice = json["dustPrice"] as? Int,
+            let poweredUp = json["poweredUp"] as? Bool else {
+                return nil
+        }
+        
         self.species = species
         self.cp = cp
         self.hp = hp
         self.dustPrice = dustPrice
         self.poweredUp = poweredUp
         
-        if let baseStats = Species.baseStats(forSpecies: species) {
-            self.baseATK = baseStats.atk
-            self.baseDEF = baseStats.def
-            self.baseSTA = baseStats.sta
-        } else {
-            self.baseATK = 0
-            self.baseDEF = 0
-            self.baseSTA = 0
-        }
-    }
-    
-    mutating func derivePossibleIVs() {
-        if self.possibleIVs != nil {
+        guard let ivs = json["ivs"] as? [String: Any] else {
+            self.ivs = nil
             return
         }
-        let minLevel = Species.levelForStardust[dustPrice]!
-        let maxLevel = minLevel + 1.5
         
-        var possibleIVs = [IndividualValues]()
-        for level in stride(from: minLevel, to: maxLevel, by: poweredUp ? 0.5 : 1.0 ) {
-            possibleIVs.append(contentsOf: self.possibleIVsForLevel(level))
-        }
-        
-        self.possibleIVs = possibleIVs
-    }
-    
-    private func possibleIVsForLevel(_ level: Double) -> [IndividualValues] {
-        var possibleIVs = [IndividualValues]()
-        let possibleSTAs = self.possibleSTAs(level: level)
-        for sta in possibleSTAs {
-            for def in Pokémon.ivRange {
-                for atk in Pokémon.ivRange {
-                    let possibleCP = self.calcCP(forLevel: level, atk: atk, def: def, sta: sta)
-                    if possibleCP == cp {
-                        possibleIVs.append((level: level, atk: atk, def: def, sta: sta))
-                    }
-                }
-            }
-        }
-        return possibleIVs
-    }
-    
-    private func possibleSTAs(level: Double) -> [Int] {
-        let minHp = self.calcHP(forLevel: level, sta: Pokémon.ivRange.lowerBound)
-        let maxHp = self.calcHP(forLevel: level, sta: Pokémon.ivRange.upperBound)
-        if hp < minHp || hp > maxHp {
-            return []
+        guard let level = ivs["level"] as? Double,
+            let atk = ivs["atk"] as? Int,
+            let def = ivs["def"] as? Int,
+            let sta = ivs["sta"] as? Int else {
+                return nil
         }
         
-        return Pokémon.ivRange.filter( { return self.calcHP(forLevel: level, sta: $0) == hp } )
+        self.ivs = (level: level, atk: atk, def: def, sta: sta)
     }
     
-    private func calcCP(forLevel level: Double, atk: Int, def: Int, sta: Int) -> Int {
-        guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
-            return 0
+    func toJson() -> [String: Any] {
+        var json: [String: Any] = ["species": species,
+                                   "cp": cp,
+                                   "hp": hp,
+                                   "dustPrice": dustPrice,
+                                   "poweredUp": poweredUp]
+        if let ivs = self.ivs {
+            json["ivs"] = ["level": ivs.level, "atk": ivs.atk, "def": ivs.def, "sta": ivs.sta]
         }
-        
-        let actualAtk = Double(getATK(atkIv: atk))
-        let actualDef = Double(getDEF(defIv: def))
-        let actualSta = Double(getSTA(staIv: sta))
-        let cp = (actualAtk * pow(actualDef, 0.5) * pow(actualSta, 0.5) * pow(cpMultiplier, 2)) / 10
-        return max(10, Int(floor(cp)))
+        return json
     }
     
-    private func calcHP(forLevel level: Double, sta: Int) -> Int {
-        guard let cpMultiplier = Species.cpMultiplierForLevel[level] else {
-            return 0
-        }
-        let hp = Double(getSTA(staIv: sta)) * cpMultiplier
-        return max(10, Int(floor(hp)))
+    // MARK: Equatable
+    
+    static func ==(lhs: Pokémon, rhs: Pokémon) -> Bool {
+        return lhs.id == rhs.id
     }
     
-    private func getATK(atkIv: Int) -> Int {
-        return baseATK + atkIv
-    }
+    private let id = Pokémon.nextUniqueId()
     
-    private func getDEF(defIv: Int) -> Int {
-        return baseDEF + defIv
-    }
-    
-    private func getSTA(staIv: Int) -> Int {
-        return baseSTA + staIv
+    private static var lastUniqueId = 0
+    private static func nextUniqueId() -> Int {
+        lastUniqueId += 1
+        return lastUniqueId
     }
 }

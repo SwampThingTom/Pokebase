@@ -110,6 +110,10 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         return savedPokémon.count
     }
     
+    private let editableCellBackgroundColor = CGColor(red: 255.0 / 255.0, green: 250.0 / 255.0, blue: 205.0 / 255.0, alpha: 1.0)
+    private let attributeCellBackgroundColor = CGColor(red: 190.0 / 255.0, green: 227.0 / 255.0, blue: 250.0 / 255.0, alpha: 1.0)
+    private let maxCpCellBackgroundColor = CGColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
+    
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard let columnIdentifier = tableColumn?.identifier else {
             return nil
@@ -119,85 +123,129 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
             return nil
         }
         
-        cellView.textField?.stringValue = cellTextForColumn(columnIdentifier, row: row)
+        let cell = cellTextForColumn(columnIdentifier, row: row)
+        cellView.textField?.stringValue = cell.text
+        if let color = cell.color {
+            cellView.wantsLayer = true
+            cellView.layer?.backgroundColor = color
+        }
+        cellView.textField?.alignment = cellAlignmentForColumn(columnIdentifier)
         return cellView
     }
     
-    func cellTextForColumn(_ columnIdentifier: String, row: Int) -> String {
+    func cellAlignmentForColumn(_ columnIdentifier: String) -> NSTextAlignment {
+        switch columnIdentifier {
+        case "NameColumn", "SpeciesColumn":
+            return .left
+        default:
+            return .center
+        }
+    }
+    
+    func cellTextForColumn(_ columnIdentifier: String, row: Int) -> (text: String, color: CGColor?) {
         let thisPokémon = savedPokémon[row]
         
         switch columnIdentifier {
         
         case "NameColumn":
-            return ""
+            return ("", nil)
             
         case "SpeciesColumn":
-            return thisPokémon.species
+            return (thisPokémon.species, editableCellBackgroundColor)
             
         case "CPColumn":
-            return "\(thisPokémon.cp)"
+            return ("\(thisPokémon.cp)", editableCellBackgroundColor)
             
         case "HPColumn":
-            return "\(thisPokémon.hp)"
+            return ("\(thisPokémon.hp)", editableCellBackgroundColor)
             
         case "DustColumn":
-            return "\(thisPokémon.dustPrice)"
+            return ("\(thisPokémon.dustPrice)", editableCellBackgroundColor)
             
         case "PoweredColumn":
-            return thisPokémon.poweredUp ? "yes" : "no"
+            return (thisPokémon.poweredUp ? "yes" : "no", editableCellBackgroundColor)
             
         case "LevelColumn":
             guard let level = thisPokémon.level else {
-                return ""
+                return ("", attributeCellBackgroundColor)
             }
-            return "\(level)"
+            return ("\(level)", attributeCellBackgroundColor)
             
         case "ATKColumn":
             guard let atk = thisPokémon.atk else {
-                return ""
+                return ("", attributeCellBackgroundColor)
             }
-            return "\(atk)"
+            return ("\(atk)", attributeCellBackgroundColor)
             
         case "DEFColumn":
             guard let def = thisPokémon.def else {
-                return ""
+                return ("", attributeCellBackgroundColor)
             }
-            return "\(def)"
+            return ("\(def)", attributeCellBackgroundColor)
             
         case "STAColumn":
             guard let sta = thisPokémon.sta else {
-                return ""
+                return ("", attributeCellBackgroundColor)
             }
-            return "\(sta)"
+            return ("\(sta)", attributeCellBackgroundColor)
             
         case "PercentColumn":
             if let ivPercent = thisPokémon.ivPercent {
-                return "\(ivPercent)"
+                return ("\(ivPercent)", backgroundColor(forIvPercent: CGFloat(ivPercent) / CGFloat(100.0)))
             }
             let range = thisPokémon.ivPercentRange
-            return "\(range.min) - \(range.max)"
+            let color = backgroundColor(forIvPercent: CGFloat(range.max) / CGFloat(100.0))
+            return ("\(range.min) - \(range.max)", color)
             
         case "PerfectCPColumn":
             guard let perfectCP = thisPokémon.perfectCP else {
-                return ""
+                return ("", maxCpCellBackgroundColor)
             }
-            return "\(perfectCP)"
+            return ("\(perfectCP)", maxCpCellBackgroundColor)
             
         case "PoweredUpCPColumn":
             guard let poweredUpCP = thisPokémon.poweredUpCP else {
-                return ""
+                return ("", maxCpCellBackgroundColor)
             }
-            return "\(poweredUpCP)"
+            return ("\(poweredUpCP)", maxCpCellBackgroundColor)
             
         case "MaxedCPColumn":
             guard let maxCP = thisPokémon.maxCP else {
-                return ""
+                return ("", maxCpCellBackgroundColor)
             }
-            return "\(maxCP)"
+            return ("\(maxCP)", maxCpCellBackgroundColor)
             
         default:
-            return "WHOA"
+            return ("WHOA", nil)
         }
     }
-
+    
+    private func backgroundColor(forIvPercent percent: CGFloat) -> CGColor {
+        let bad = rgbFloat(red: 230, green: 124, blue: 115)
+        let good = rgbFloat(red: 87, green: 187, blue: 138)
+        let white = rgbFloat(red: 255, green: 255, blue: 255)
+        let rgb = percent <= 0.5 ? gradient(percent: percent, a: bad, b: white) : gradient(percent: percent - 0.5, a: white, b: good)
+        return CGColor(red: rgb.red, green: rgb.green, blue: rgb.blue, alpha: 1.0)
+    }
+    
+    private typealias rgb = (red: CGFloat, green: CGFloat, blue: CGFloat)
+    
+    private func rgbFloat(red: Int, green: Int, blue: Int) -> rgb {
+        let maxScalar = CGFloat(255)
+        return (red: CGFloat(red) / maxScalar,
+                green: CGFloat(green) / maxScalar,
+                blue: CGFloat(blue) / maxScalar)
+    }
+    
+    private func gradient(percent: CGFloat, a: rgb, b: rgb) -> rgb {
+        return (red: gradient(percent: percent, a: a.red, b: b.red),
+                green: gradient(percent: percent, a: a.green, b: b.green),
+                blue: gradient(percent: percent, a: a.blue, b: b.blue))
+    }
+    
+    private func gradient(percent: CGFloat, a: CGFloat, b: CGFloat) -> CGFloat {
+        let a1 = a * (0.5 - percent)
+        let b1 = b * (percent)
+        return (a1 + b1) * 2.0
+    }
 }

@@ -87,7 +87,11 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         }
         
         if combinations > 1 {
-            return "There are \(combinations) possible combinations"
+            let range = ivs.reduce((min: 100, max: 0), { (range, ivs) -> MinMaxRange in
+                let ivPercent = Pokémon.percentOfMax(ivs: ivs)
+                return (min: min(range.min, ivPercent), max: max(range.max, ivPercent))
+            })
+            return "There are \(combinations) possible combinations with an IV range of \(range.min) - \(range.max)"
         }
         
         let iv = ivs.first!

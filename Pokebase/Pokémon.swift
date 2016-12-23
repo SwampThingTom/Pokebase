@@ -155,7 +155,7 @@ struct Pokémon: Equatable {
         return json
     }
     
-    private static func percentOfMax(ivs: IndividualValues) -> Int {
+    static func percentOfMax(ivs: IndividualValues) -> Int {
         return Int(round(100.0 * Double(ivs.atk + ivs.def + ivs.sta) / 45.0))
     }
 

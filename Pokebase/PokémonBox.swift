@@ -8,8 +8,16 @@
 
 import Foundation
 
-struct PokémonBox {
+class PokémonBox: TrainerLevelProvider {
  
+    var trainerLevel: Int {
+        didSet {
+            if trainerLevel != oldValue {
+                save()
+            }
+        }
+    }
+    
     var count: Int {
         get {
             return savedPokémon.count
@@ -29,8 +37,10 @@ struct PokémonBox {
         do {
             fileUrl = try! file ?? PokémonBox.defaultPokémonFile()
             let jsonData = try Data(contentsOf: fileUrl)
-            let jsonArray = try JSONSerialization.jsonObject(with: jsonData) as! [[String: Any]]
-            savedPokémon = jsonArray.map({ (json: [String : Any]) -> Pokémon in
+            let jsonDictionary = try JSONSerialization.jsonObject(with: jsonData) as! [String : Any]
+            trainerLevel = jsonDictionary["Level"] as? Int ?? 1
+            let pokémonArray = jsonDictionary["Pokémon"] as! [[String : Any]]
+            savedPokémon = pokémonArray.map({ (json: [String : Any]) -> Pokémon in
                 return Pokémon(json: json)!
             })
         }
@@ -41,17 +51,19 @@ struct PokémonBox {
                     PokémonBox.backup(fileUrl)
                 }
             }
+            trainerLevel = 1
             savedPokémon = [Pokémon]()
             save()
         }
+        Pokémon.trainerLevelProvider = self
     }
     
-    mutating func add(_ pokémonToAdd: Pokémon) {
+    func add(_ pokémonToAdd: Pokémon) {
         self.savedPokémon.append(pokémonToAdd)
         save()
     }
     
-    mutating func remove(_ pokémonToRemove: Pokémon) {
+    func remove(_ pokémonToRemove: Pokémon) {
         self.savedPokémon = self.savedPokémon.filter({ (pokémon) -> Bool in
             pokémon == pokémonToRemove
         })
@@ -59,12 +71,14 @@ struct PokémonBox {
     }
     
     private func save() {
-        let jsonArray = savedPokémon.map { (pokémon: Pokémon) -> [String : Any] in
+        let pokémonArray = savedPokémon.map { (pokémon: Pokémon) -> [String : Any] in
             return pokémon.toJson()
         }
         
+        let jsonDictionary = ["Level": trainerLevel, "Pokémon": pokémonArray] as [String : Any]
+        
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: jsonArray)
+            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary)
             try jsonData.write(to: fileUrl)
         }
         catch let error as NSError {

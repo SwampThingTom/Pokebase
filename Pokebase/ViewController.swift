@@ -8,8 +8,9 @@
 
 import Cocoa
 
-class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegate, NSTableViewDataSource {
+class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBoxDataSource, NSTableViewDelegate, NSTableViewDataSource {
 
+    @IBOutlet weak var trainerLevelField: NSTextField?
     @IBOutlet weak var pokémonField: NSComboBox?
     @IBOutlet weak var cpField: NSTextField?
     @IBOutlet weak var hpField: NSTextField?
@@ -22,6 +23,7 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        trainerLevelField?.stringValue = "\(savedPokémon.trainerLevel)"
         pokémonField?.selectItem(at: 0)
     }
 
@@ -29,6 +31,20 @@ class ViewController: NSViewController, NSComboBoxDataSource, NSTableViewDelegat
         didSet {
         // Update the view, if already loaded.
         }
+    }
+    
+    func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+        guard let level = trainerLevelField?.integerValue else {
+            return false
+        }
+        
+        if level < 1 || level > 40 {
+            return false
+        }
+        
+        savedPokémon.trainerLevel = level
+        self.tableView?.reloadData()
+        return true
     }
     
     @IBAction func calculateIVs(sender: NSButton) {

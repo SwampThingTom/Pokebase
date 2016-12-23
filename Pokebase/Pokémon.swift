@@ -10,6 +10,10 @@ import Foundation
 
 typealias MinMaxRange = (min: Int, max: Int)
 
+protocol TrainerLevelProvider {
+    var trainerLevel: Int { get }
+}
+
 struct Pokémon: Equatable {
     
     let species: String
@@ -23,31 +27,19 @@ struct Pokémon: Equatable {
     let possibleIvs: [IndividualValues]
     
     var level: Double? {
-        guard let ivs = ivs else {
-            return nil
-        }
-        return ivs.level
+        return ivs?.level
     }
     
     var atk: Int? {
-        guard let ivs = ivs else {
-            return nil
-        }
-        return ivs.atk
+        return ivs?.atk
     }
     
     var def: Int? {
-        guard let ivs = ivs else {
-            return nil
-        }
-        return ivs.def
+        return ivs?.def
     }
 
     var sta: Int? {
-        guard let ivs = ivs else {
-            return nil
-        }
-        return ivs.sta
+        return ivs?.sta
     }
 
     var ivPercent: Int? {
@@ -64,37 +56,41 @@ struct Pokémon: Equatable {
         })
     }
     
-    private static func percentOfMax(ivs: IndividualValues) -> Int {
-        return Int(round(100.0 * Double(ivs.atk + ivs.def + ivs.sta) / 45.0))
-    }
-    
     var perfectCP: Int? {
-        guard let ivs = ivs else {
+        guard let level = ivs?.level else {
             return nil
         }
-        return ivCalculator.calcCP(forLevel: ivs.level, atk: 15, def: 15, sta: 15)
+        return ivCalculator.calcCP(forLevel: level, atk: 15, def: 15, sta: 15)
     }
     
     var poweredUpCP: Int? {
-        guard let ivs = ivs else {
+        guard let ivs = ivs, let maxLevel = maxLevel else {
             return nil
         }
-        return ivCalculator.calcCP(forLevel: 40, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
+        return ivCalculator.calcCP(forLevel: maxLevel, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
     }
     
     var maxCP: Int? {
-        guard let ivs = ivs else {
-            return nil
-        }
-        guard let evolvedSpecies = Species.finalEvolution(forSpecies: species) else {
-            return nil
+        guard let ivs = ivs,
+            let maxLevel = maxLevel,
+            let evolvedSpecies = Species.finalEvolution(forSpecies: species) else {
+                return nil
         }
         let evolvedCalculator = IVCalculator(species: evolvedSpecies,
                                              cp: cp,
                                              hp: hp,
                                              dustPrice: dustPrice,
                                              poweredUp: poweredUp)
-        return evolvedCalculator.calcCP(forLevel: 40, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
+        return evolvedCalculator.calcCP(forLevel: maxLevel, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
+    }
+    
+    static var trainerLevelProvider: TrainerLevelProvider?
+    
+    var maxLevel: Double? {
+        guard let trainerLevel = Pokémon.trainerLevelProvider?.trainerLevel else {
+            return nil
+        }
+        return Double(trainerLevel) + 1.5
     }
     
     init(_ pokémon: IVCalculator) {
@@ -159,6 +155,10 @@ struct Pokémon: Equatable {
         return json
     }
     
+    private static func percentOfMax(ivs: IndividualValues) -> Int {
+        return Int(round(100.0 * Double(ivs.atk + ivs.def + ivs.sta) / 45.0))
+    }
+
     // MARK: Equatable
     
     static func ==(lhs: Pokémon, rhs: Pokémon) -> Bool {

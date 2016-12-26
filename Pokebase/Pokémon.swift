@@ -16,6 +16,7 @@ protocol TrainerLevelProvider {
 
 struct Pokémon: Equatable {
     
+    var name: String?
     let species: String
     let cp: Int
     let hp: Int
@@ -109,8 +110,7 @@ struct Pokémon: Equatable {
         guard let species = json["species"] as? String,
             let cp = json["cp"] as? Int,
             let hp = json["hp"] as? Int,
-            let dustPrice = json["dustPrice"] as? Int,
-            let poweredUp = json["poweredUp"] as? Bool else {
+            let dustPrice = json["dustPrice"] as? Int else {
                 return nil
         }
         
@@ -118,7 +118,9 @@ struct Pokémon: Equatable {
         self.cp = cp
         self.hp = hp
         self.dustPrice = dustPrice
-        self.poweredUp = poweredUp
+        
+        self.name = json["name"] as! String?
+        self.poweredUp = json["poweredUp"] as? Bool ?? false
         
         self.ivCalculator = IVCalculator(species: self.species,
                                          cp: self.cp,
@@ -144,7 +146,8 @@ struct Pokémon: Equatable {
     }
     
     func toJson() -> [String: Any] {
-        var json: [String: Any] = ["species": species,
+        var json: [String: Any] = ["name": name ?? "",
+                                   "species": species,
                                    "cp": cp,
                                    "hp": hp,
                                    "dustPrice": dustPrice,

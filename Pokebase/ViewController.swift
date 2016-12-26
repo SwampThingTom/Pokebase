@@ -152,7 +152,10 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         switch columnIdentifier {
         
         case "NameColumn":
-            return ("", nil)
+            guard let name = thisPokémon.name else {
+                return ("", nil)
+            }
+            return (name, nil)
             
         case "SpeciesColumn":
             return (thisPokémon.species, editableCellBackgroundColor)

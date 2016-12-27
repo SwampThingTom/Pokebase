@@ -25,26 +25,13 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         super.viewDidLoad()
         trainerLevelField?.stringValue = "\(savedPokémon.trainerLevel)"
         pokémonField?.selectItem(at: 0)
+        tableView?.sortDescriptors = [NSSortDescriptor(key: "pokédex", ascending: true)]
     }
 
     override var representedObject: Any? {
         didSet {
-        // Update the view, if already loaded.
+            // Update the view, if already loaded.
         }
-    }
-    
-    func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
-        guard let level = trainerLevelField?.integerValue else {
-            return false
-        }
-        
-        if level < 1 || level > 40 {
-            return false
-        }
-        
-        savedPokémon.trainerLevel = level
-        self.tableView?.reloadData()
-        return true
     }
     
     @IBAction func calculateIVs(sender: NSButton) {
@@ -62,6 +49,10 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         
         let pokémon = Pokémon(ivCalculator)
         savedPokémon.add(pokémon)
+        
+        if let sortDescriptors = tableView?.sortDescriptors {
+            savedPokémon.sort(using: sortDescriptors)
+        }
         self.tableView?.reloadData()
     }
     
@@ -96,6 +87,22 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         
         let iv = ivs.first!
         return "Level: \(iv.level) ATK: \(iv.atk) DEF: \(iv.def) STA: \(iv.sta)"
+    }
+    
+    // MARK: NSControlTextEditingDelegate
+    
+    func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+        guard let level = trainerLevelField?.integerValue else {
+            return false
+        }
+        
+        if level < 1 || level > 40 {
+            return false
+        }
+        
+        savedPokémon.trainerLevel = level
+        self.tableView?.reloadData()
+        return true
     }
     
     // MARK: - ComboBox Data Source
@@ -137,7 +144,7 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         return cellView
     }
     
-    func cellAlignmentForColumn(_ columnIdentifier: String) -> NSTextAlignment {
+    private func cellAlignmentForColumn(_ columnIdentifier: String) -> NSTextAlignment {
         switch columnIdentifier {
         case "NameColumn", "SpeciesColumn":
             return .left
@@ -146,16 +153,16 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         }
     }
     
-    func cellTextForColumn(_ columnIdentifier: String, row: Int) -> (text: String, color: CGColor?) {
+    private func cellTextForColumn(_ columnIdentifier: String, row: Int) -> (text: String, color: CGColor?) {
         let thisPokémon = savedPokémon[row]
         
         switch columnIdentifier {
         
         case "NameColumn":
             guard let name = thisPokémon.name else {
-                return ("", nil)
+                return ("", editableCellBackgroundColor)
             }
-            return (name, nil)
+            return (name, editableCellBackgroundColor)
             
         case "SpeciesColumn":
             return (thisPokémon.species, editableCellBackgroundColor)
@@ -254,5 +261,10 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         let a1 = a * (0.5 - percent)
         let b1 = b * (percent)
         return (a1 + b1) * 2.0
+    }
+    
+    func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+        savedPokémon.sort(using: tableView.sortDescriptors)
+        tableView.reloadData()
     }
 }

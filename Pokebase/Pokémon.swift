@@ -18,6 +18,7 @@ struct Pokémon: Equatable {
     
     var name: String?
     let species: String
+    let pokédex: Int?
     let cp: Int
     let hp: Int
     let dustPrice: Int
@@ -96,6 +97,8 @@ struct Pokémon: Equatable {
     
     init(_ pokémon: IVCalculator) {
         self.species = pokémon.species
+        self.pokédex = Species.names.index(of: self.species)
+        
         self.cp = pokémon.cp
         self.hp = pokémon.hp
         self.dustPrice = pokémon.dustPrice
@@ -115,6 +118,8 @@ struct Pokémon: Equatable {
         }
         
         self.species = species
+        self.pokédex = Species.names.index(of: self.species)
+        
         self.cp = cp
         self.hp = hp
         self.dustPrice = dustPrice

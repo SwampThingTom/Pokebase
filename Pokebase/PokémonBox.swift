@@ -59,15 +59,164 @@ class PokémonBox: TrainerLevelProvider {
     }
     
     func add(_ pokémonToAdd: Pokémon) {
-        self.savedPokémon.append(pokémonToAdd)
+        savedPokémon.append(pokémonToAdd)
         save()
     }
     
     func remove(_ pokémonToRemove: Pokémon) {
-        self.savedPokémon = self.savedPokémon.filter({ (pokémon) -> Bool in
+        savedPokémon = self.savedPokémon.filter({ (pokémon) -> Bool in
             pokémon == pokémonToRemove
         })
         save()
+    }
+    
+    func sort(using descriptors: [NSSortDescriptor]) {
+        guard let descriptor = descriptors.first else {
+            return
+        }
+        sort(using: descriptor)
+    }
+    
+    private func sort(using descriptor: NSSortDescriptor) {
+        guard let key = descriptor.key else {
+            return
+        }
+        
+        switch key {
+        case "name":
+            sortByName(ascending: descriptor.ascending)
+        case "pokédex":
+            sortByPokédex(ascending: descriptor.ascending)
+        case "species":
+            sortBySpecies(ascending: descriptor.ascending)
+        case "cp":
+            sortByCP(ascending: descriptor.ascending)
+        case "hp":
+            sortByHP(ascending: descriptor.ascending)
+        case "dustPrice":
+            sortByDustPrice(ascending: descriptor.ascending)
+        case "level":
+            sortByLevel(ascending: descriptor.ascending)
+        case "atk":
+            sortByATK(ascending: descriptor.ascending)
+        case "def":
+            sortByDEF(ascending: descriptor.ascending)
+        case "sta":
+            sortBySTA(ascending: descriptor.ascending)
+        case "perfection":
+            sortByPerfection(ascending: descriptor.ascending)
+        case "perfectCP":
+            sortByPerfectCP(ascending: descriptor.ascending)
+        case "poweredUpCP":
+            sortByPoweredUpCP(ascending: descriptor.ascending)
+        case "maxCP":
+            sortByMaxCP(ascending: descriptor.ascending)
+        default:
+            return
+        }
+    }
+    
+    private func sortByName(ascending: Bool) {
+        let comparisonResult: ComparisonResult = ascending ? .orderedAscending : .orderedDescending
+        savedPokémon.sort(by: {
+            let a = $0.name ?? ""
+            let b = $1.name ?? ""
+            return a.compare(b) == comparisonResult
+        })
+    }
+    
+    private func sortByPokédex(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.pokédex ?? Int.max
+            let b = $1.pokédex ?? Int.max
+            if a == b {
+                return comparePerfection(a: $0, b: $1, ascending: false)
+            }
+            return ascending ? a < b : a > b
+        })
+    }
+    
+    private func sortBySpecies(ascending: Bool) {
+        let comparisonResult: ComparisonResult = ascending ? .orderedAscending : .orderedDescending
+        savedPokémon.sort(by: { $0.species.compare($1.species) == comparisonResult })
+    }
+    
+    private func sortByPerfection(ascending: Bool) {
+        savedPokémon.sort(by: { comparePerfection(a: $0, b: $1, ascending: ascending )})
+    }
+    
+    private func comparePerfection(a: Pokémon, b: Pokémon, ascending: Bool) -> Bool {
+        let ivA = a.ivPercent ?? a.ivPercentRange.max
+        let ivB = b.ivPercent ?? b.ivPercentRange.max
+        return ascending ? ivA < ivB : ivA > ivB
+    }
+    
+    private func sortByCP(ascending: Bool) {
+        savedPokémon.sort(by: { ascending ? $0.cp < $1.cp : $0.cp > $1.cp })
+    }
+    
+    private func sortByHP(ascending: Bool) {
+        savedPokémon.sort(by: { ascending ? $0.hp < $1.hp : $0.hp > $1.hp })
+    }
+    
+    private func sortByDustPrice(ascending: Bool) {
+        savedPokémon.sort(by: { ascending ? $0.dustPrice < $1.dustPrice : $0.dustPrice > $1.dustPrice })
+    }
+    
+    private func sortByLevel(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.level ?? -1
+            let b = $1.level ?? -1
+            return ascending ? a < b : a > b
+        })
+    }
+    
+    private func sortByATK(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.atk ?? Int.min
+            let b = $1.atk ?? Int.min
+            return ascending ? a < b : a > b
+        })
+    }
+    
+    private func sortByDEF(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.def ?? Int.min
+            let b = $1.def ?? Int.min
+            return ascending ? a < b : a > b
+        })
+    }
+    
+    private func sortBySTA(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.sta ?? Int.min
+            let b = $1.sta ?? Int.min
+            return ascending ? a < b : a > b
+        })
+    }
+    
+    private func sortByPerfectCP(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.perfectCP ?? Int.min
+            let b = $1.perfectCP ?? Int.min
+            return ascending ? a < b : a > b
+        })
+    }
+    
+    private func sortByPoweredUpCP(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.poweredUpCP ?? Int.min
+            let b = $1.poweredUpCP ?? Int.min
+            return ascending ? a < b : a > b
+        })
+    }
+    
+    private func sortByMaxCP(ascending: Bool) {
+        savedPokémon.sort(by: {
+            let a = $0.maxCP ?? Int.min
+            let b = $1.maxCP ?? Int.min
+            return ascending ? a < b : a > b
+        })
     }
     
     private func save() {

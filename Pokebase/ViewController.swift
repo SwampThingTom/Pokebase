@@ -115,6 +115,21 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     // MARK: NSControlTextEditingDelegate
     
     func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
+        guard let identifier = control.identifier else {
+            return true
+        }
+        
+        switch(identifier) {
+        case "trainerLevelField":
+            return trainerLevelFieldShouldEndEditing()
+        case "ivCalcSpeciesField":
+            return ivCalcSpeciesFieldShouldEndEditing()
+        default:
+            return true
+        }
+    }
+    
+    func trainerLevelFieldShouldEndEditing() -> Bool {
         guard let level = trainerLevelField?.integerValue else {
             return false
         }
@@ -125,6 +140,19 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         
         savedPokémon.trainerLevel = level
         self.tableView?.reloadData()
+        return true
+    }
+    
+    func ivCalcSpeciesFieldShouldEndEditing() -> Bool {
+        guard let pokémonField = pokémonField else {
+            return false
+        }
+        
+        guard let speciesIndex = Species.names.index(of: pokémonField.stringValue) else {
+            return false
+        }
+        
+        pokémonField.selectItem(at: speciesIndex)
         return true
     }
     

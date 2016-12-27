@@ -38,6 +38,7 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         guard let ivCalculator = ivCalculator() else {
             return
         }
+        
         let possibleIVs = ivCalculator.derivePossibleIVs()
         resultLabel?.stringValue = statusString(forIVs: possibleIVs)
     }
@@ -154,11 +155,13 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         
         let cell = cellTextForColumn(columnIdentifier, row: row)
         cellView.textField?.stringValue = cell.text
+        cellView.textField?.alignment = cellAlignmentForColumn(columnIdentifier)
+        
         if let color = cell.color {
             cellView.wantsLayer = true
             cellView.layer?.backgroundColor = color
         }
-        cellView.textField?.alignment = cellAlignmentForColumn(columnIdentifier)
+        
         return cellView
     }
     

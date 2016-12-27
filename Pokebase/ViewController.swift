@@ -229,6 +229,9 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
             }
             return ("\(maxCP)", maxCpCellBackgroundColor)
             
+        case "RemoveColumn":
+            return ("", nil)
+            
         default:
             return ("WHOA", nil)
         }

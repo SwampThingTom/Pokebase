@@ -43,17 +43,39 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     }
     
     @IBAction func savePokémon(sender: NSButton) {
-        guard let ivCalculator = ivCalculator() else {
-            return
+        guard let tableView = self.tableView,
+            let ivCalculator = ivCalculator() else {
+                return
         }
         
         let pokémon = Pokémon(ivCalculator)
         savedPokémon.add(pokémon)
-        
-        if let sortDescriptors = tableView?.sortDescriptors {
-            savedPokémon.sort(using: sortDescriptors)
+        savedPokémon.sort(using: tableView.sortDescriptors)
+        tableView.reloadData()
+    }
+    
+    @IBAction func removePokémon(_ sender: NSButton) {
+        guard let tableView = self.tableView else {
+            return
         }
-        self.tableView?.reloadData()
+        
+        let remove = confirm(question: "Are you sure you want to remove this Pokémon?",
+                             text: "This can not be undone")
+        if remove {
+            let index = tableView.row(for: sender)
+            savedPokémon.remove(at: index)
+            tableView.reloadData()
+        }
+    }
+    
+    private func confirm(question: String, text: String) -> Bool {
+        let alert: NSAlert = NSAlert()
+        alert.messageText = question
+        alert.informativeText = text
+        alert.alertStyle = NSAlertStyle.warning
+        alert.addButton(withTitle: "Yes")
+        alert.addButton(withTitle: "No")
+        return alert.runModal() == NSAlertFirstButtonReturn
     }
     
     private func ivCalculator() -> IVCalculator? {
@@ -121,10 +143,6 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         return savedPokémon.count
     }
     
-    private let editableCellBackgroundColor = CGColor(red: 255.0 / 255.0, green: 250.0 / 255.0, blue: 205.0 / 255.0, alpha: 1.0)
-    private let attributeCellBackgroundColor = CGColor(red: 190.0 / 255.0, green: 227.0 / 255.0, blue: 250.0 / 255.0, alpha: 1.0)
-    private let maxCpCellBackgroundColor = CGColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
-    
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard let columnIdentifier = tableColumn?.identifier else {
             return nil
@@ -144,6 +162,13 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         return cellView
     }
     
+    func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
+        savedPokémon.sort(using: tableView.sortDescriptors)
+        tableView.reloadData()
+    }
+    
+    /// MARK: - TableView Cell Configuration
+    
     private func cellAlignmentForColumn(_ columnIdentifier: String) -> NSTextAlignment {
         switch columnIdentifier {
         case "NameColumn", "SpeciesColumn":
@@ -152,6 +177,10 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
             return .center
         }
     }
+    
+    private let editableCellBackgroundColor = CGColor(red: 255.0 / 255.0, green: 250.0 / 255.0, blue: 205.0 / 255.0, alpha: 1.0)
+    private let attributeCellBackgroundColor = CGColor(red: 190.0 / 255.0, green: 227.0 / 255.0, blue: 250.0 / 255.0, alpha: 1.0)
+    private let maxCpCellBackgroundColor = CGColor(red: 240.0 / 255.0, green: 240.0 / 255.0, blue: 240.0 / 255.0, alpha: 1.0)
     
     private func cellTextForColumn(_ columnIdentifier: String, row: Int) -> (text: String, color: CGColor?) {
         let thisPokémon = savedPokémon[row]
@@ -264,10 +293,5 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         let a1 = a * (0.5 - percent)
         let b1 = b * (percent)
         return (a1 + b1) * 2.0
-    }
-    
-    func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
-        savedPokémon.sort(using: tableView.sortDescriptors)
-        tableView.reloadData()
     }
 }

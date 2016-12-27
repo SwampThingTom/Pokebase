@@ -63,10 +63,8 @@ class PokémonBox: TrainerLevelProvider {
         save()
     }
     
-    func remove(_ pokémonToRemove: Pokémon) {
-        savedPokémon = self.savedPokémon.filter({ (pokémon) -> Bool in
-            pokémon == pokémonToRemove
-        })
+    func remove(at index: Int) {
+        savedPokémon.remove(at: index)
         save()
     }
     

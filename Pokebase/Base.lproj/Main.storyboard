@@ -490,7 +490,7 @@
                                     <constraint firstAttribute="height" constant="62" id="jvR-em-v7o"/>
                                 </constraints>
                             </box>
-                            <box title="IV Calculator" translatesAutoresizingMaskIntoConstraints="NO" id="LdB-kQ-N1I">
+                            <box translatesAutoresizingMaskIntoConstraints="NO" id="LdB-kQ-N1I">
                                 <rect key="frame" x="17" y="232" width="1066" height="145"/>
                                 <view key="contentView" id="Z71-yN-Net">
                                     <rect key="frame" x="2" y="2" width="1062" height="128"/>
@@ -691,13 +691,13 @@
                                 </view>
                             </box>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gp9-cY-Yzw">
-                                <rect key="frame" x="20" y="20" width="1060" height="208"/>
+                                <rect key="frame" x="20" y="45" width="1060" height="183"/>
                                 <clipView key="contentView" id="UNu-AO-WZV">
-                                    <rect key="frame" x="1" y="0.0" width="1058" height="207"/>
+                                    <rect key="frame" x="1" y="0.0" width="1058" height="182"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="frc-dg-GYj" viewBased="YES" id="wn5-7k-h6m">
-                                            <rect key="frame" x="0.0" y="0.0" width="1058" height="184"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="1058" height="159"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1294,17 +1294,28 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jWN-fx-eYb">
+                                <rect key="frame" x="18" y="20" width="1064" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Total Pokémon: 0     Unique Species: 0" id="zSB-A9-6mK">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="jWN-fx-eYb" secondAttribute="bottom" constant="20" symbolic="YES" id="9sj-zr-A6g"/>
                             <constraint firstItem="gp9-cY-Yzw" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="BMr-41-GeK"/>
+                            <constraint firstAttribute="trailing" secondItem="jWN-fx-eYb" secondAttribute="trailing" constant="20" symbolic="YES" id="OtL-HW-gjd"/>
+                            <constraint firstItem="jWN-fx-eYb" firstAttribute="top" secondItem="gp9-cY-Yzw" secondAttribute="bottom" constant="8" symbolic="YES" id="QkR-5r-SsF"/>
                             <constraint firstItem="gp9-cY-Yzw" firstAttribute="top" secondItem="LdB-kQ-N1I" secondAttribute="bottom" constant="8" symbolic="YES" id="SP1-yt-rJy"/>
                             <constraint firstAttribute="trailing" secondItem="gp9-cY-Yzw" secondAttribute="trailing" constant="20" symbolic="YES" id="Sd2-eo-qOe"/>
                             <constraint firstItem="LdB-kQ-N1I" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="SgP-Pn-cmN"/>
                             <constraint firstAttribute="trailing" secondItem="LdB-kQ-N1I" secondAttribute="trailing" constant="20" symbolic="YES" id="Xao-hh-ssX"/>
-                            <constraint firstAttribute="bottom" secondItem="gp9-cY-Yzw" secondAttribute="bottom" constant="20" symbolic="YES" id="hX6-aQ-lbI"/>
                             <constraint firstItem="4FW-K3-hAp" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="mts-TB-4FK"/>
                             <constraint firstAttribute="trailing" secondItem="4FW-K3-hAp" secondAttribute="trailing" constant="20" symbolic="YES" id="spR-71-QgT"/>
                             <constraint firstItem="4FW-K3-hAp" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="vJs-LQ-C8P"/>
+                            <constraint firstItem="jWN-fx-eYb" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="x0l-X3-IKf"/>
                             <constraint firstItem="LdB-kQ-N1I" firstAttribute="top" secondItem="4FW-K3-hAp" secondAttribute="bottom" constant="8" symbolic="YES" id="x46-zD-gWI"/>
                         </constraints>
                     </view>
@@ -1315,6 +1326,7 @@
                         <outlet property="isPoweredUpField" destination="psR-Y2-BIL" id="nGo-ZH-B8W"/>
                         <outlet property="pokémonField" destination="uj5-0D-1zC" id="OAd-C9-K1j"/>
                         <outlet property="resultLabel" destination="AYh-VL-zSX" id="nAa-RJ-wbu"/>
+                        <outlet property="statusLabel" destination="jWN-fx-eYb" id="myk-17-gpZ"/>
                         <outlet property="tableView" destination="wn5-7k-h6m" id="6P8-fe-Nrf"/>
                         <outlet property="trainerLevelField" destination="vhY-P9-sqr" id="r3c-Hl-sr2"/>
                     </connections>

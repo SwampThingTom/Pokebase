@@ -42,7 +42,7 @@ struct IVCalculator {
     
     func derivePossibleIVs() -> [IndividualValues] {
         let minLevel = Species.levelForStardust[dustPrice]!
-        let maxLevel = minLevel + 1.5
+        let maxLevel = minLevel + 2.0
         
         var possibleIVs = [IndividualValues]()
         for level in stride(from: minLevel, to: maxLevel, by: poweredUp ? 0.5 : 1.0 ) {

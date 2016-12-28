@@ -24,6 +24,14 @@ class PokémonBox: TrainerLevelProvider {
         }
     }
     
+    var uniqueSpeciesCount: Int {
+        get {
+            let species = savedPokémon.map { $0.species }
+            let uniqueSpecies = Set(species)
+            return uniqueSpecies.count
+        }
+    }
+    
     subscript(index: Int) -> Pokémon {
         get {
             return savedPokémon[index]

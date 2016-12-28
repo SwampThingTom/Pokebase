@@ -10,22 +10,24 @@ import Cocoa
 
 class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBoxDataSource, NSTableViewDelegate, NSTableViewDataSource {
 
-    @IBOutlet weak var trainerLevelField: NSTextField?
-    @IBOutlet weak var pokémonField: NSComboBox?
-    @IBOutlet weak var cpField: NSTextField?
-    @IBOutlet weak var hpField: NSTextField?
-    @IBOutlet weak var dustField: NSPopUpButton?
-    @IBOutlet weak var isPoweredUpField: NSPopUpButton?
-    @IBOutlet weak var resultLabel: NSTextField?
-    @IBOutlet weak var tableView: NSTableView?
+    @IBOutlet weak var trainerLevelField: NSTextField!
+    @IBOutlet weak var pokémonField: NSComboBox!
+    @IBOutlet weak var cpField: NSTextField!
+    @IBOutlet weak var hpField: NSTextField!
+    @IBOutlet weak var dustField: NSPopUpButton!
+    @IBOutlet weak var isPoweredUpField: NSPopUpButton!
+    @IBOutlet weak var resultLabel: NSTextField!
+    @IBOutlet weak var statusLabel: NSTextField!
+    @IBOutlet weak var tableView: NSTableView!
     
     private var savedPokémon = PokémonBox()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        trainerLevelField?.stringValue = "\(savedPokémon.trainerLevel)"
-        pokémonField?.selectItem(at: 0)
-        tableView?.sortDescriptors = [NSSortDescriptor(key: "pokédex", ascending: true)]
+        trainerLevelField.stringValue = "\(savedPokémon.trainerLevel)"
+        pokémonField.selectItem(at: 0)
+        statusLabel.stringValue = statusString()
+        tableView.sortDescriptors = [NSSortDescriptor(key: "pokédex", ascending: true)]
     }
 
     override var representedObject: Any? {
@@ -40,32 +42,27 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         }
         
         let possibleIVs = ivCalculator.derivePossibleIVs()
-        resultLabel?.stringValue = statusString(forIVs: possibleIVs)
+        resultLabel.stringValue = ivResultString(forIVs: possibleIVs)
     }
     
     @IBAction func savePokémon(sender: NSButton) {
-        guard let tableView = self.tableView,
-            let ivCalculator = ivCalculator() else {
+        guard let ivCalculator = ivCalculator() else {
                 return
         }
         
         let pokémon = Pokémon(ivCalculator)
         savedPokémon.add(pokémon)
         savedPokémon.sort(using: tableView.sortDescriptors)
-        tableView.reloadData()
+        refresh()
     }
     
     @IBAction func removePokémon(_ sender: NSButton) {
-        guard let tableView = self.tableView else {
-            return
-        }
-        
         let remove = confirm(question: "Are you sure you want to remove this Pokémon?",
                              text: "This can not be undone")
         if remove {
             let index = tableView.row(for: sender)
             savedPokémon.remove(at: index)
-            tableView.reloadData()
+            refresh()
         }
     }
     
@@ -80,20 +77,26 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     }
     
     private func ivCalculator() -> IVCalculator? {
-        guard let pokémonIndex = pokémonField?.indexOfSelectedItem,
-            let cp = cpField?.integerValue,
-            let hp = hpField?.integerValue,
-            let dustString = dustField?.titleOfSelectedItem,
+        guard let dustString = dustField.titleOfSelectedItem,
             let dust = Int(dustString) else {
                 return nil
         }
         
+        let pokémonIndex = pokémonField.indexOfSelectedItem
+        if pokémonIndex < 0 {
+            return nil
+        }
+        
         let species = Species.names[pokémonIndex]
-        let calculator = IVCalculator(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: false)
+        let cp = cpField.integerValue
+        let hp = hpField.integerValue
+        let poweredUp = isPoweredUpField.titleOfSelectedItem == "Yes"
+        
+        let calculator = IVCalculator(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: poweredUp)
         return calculator
     }
     
-    private func statusString(forIVs ivs: [IndividualValues]) -> String {
+    private func ivResultString(forIVs ivs: [IndividualValues]) -> String {
         let combinations = ivs.count
         
         if combinations == 0 {
@@ -102,14 +105,26 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         
         if combinations > 1 {
             let range = ivs.reduce((min: 100, max: 0), { (range, ivs) -> MinMaxRange in
-                let ivPercent = Pokémon.percentOfMax(ivs: ivs)
-                return (min: min(range.min, ivPercent), max: max(range.max, ivPercent))
+                let perfection = Pokémon.percentOfMax(ivs: ivs)
+                return (min: min(range.min, perfection), max: max(range.max, perfection))
             })
             return "There are \(combinations) possible combinations with an IV range of \(range.min) - \(range.max)"
         }
         
         let iv = ivs.first!
-        return "Level: \(iv.level) ATK: \(iv.atk) DEF: \(iv.def) STA: \(iv.sta)"
+        let perfection = Pokémon.percentOfMax(ivs: iv)
+        return "Level: \(iv.level) ATK: \(iv.atk) DEF: \(iv.def) STA: \(iv.sta) Perfection: \(perfection)"
+    }
+    
+    private func refresh() {
+        tableView.reloadData()
+        statusLabel.stringValue = statusString()
+    }
+    
+    private func statusString() -> String {
+        let numberOfPokémon = savedPokémon.count
+        let numberOfSpecies = savedPokémon.uniqueSpeciesCount
+        return "Total Pokémon: \(numberOfPokémon)     Unique Species: \(numberOfSpecies)"
     }
     
     // MARK: NSControlTextEditingDelegate
@@ -130,24 +145,17 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     }
     
     func trainerLevelFieldShouldEndEditing() -> Bool {
-        guard let level = trainerLevelField?.integerValue else {
-            return false
-        }
-        
+        let level = trainerLevelField.integerValue
         if level < 1 || level > 40 {
             return false
         }
         
         savedPokémon.trainerLevel = level
-        self.tableView?.reloadData()
+        refresh()
         return true
     }
     
     func ivCalcSpeciesFieldShouldEndEditing() -> Bool {
-        guard let pokémonField = pokémonField else {
-            return false
-        }
-        
         guard let speciesIndex = Species.names.index(of: pokémonField.stringValue) else {
             return false
         }
@@ -184,12 +192,8 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         let cell = cellTextForColumn(columnIdentifier, row: row)
         cellView.textField?.stringValue = cell.text
         cellView.textField?.alignment = cellAlignmentForColumn(columnIdentifier)
-        
-        if let color = cell.color {
-            cellView.wantsLayer = true
-            cellView.layer?.backgroundColor = color
-        }
-        
+        cellView.wantsLayer = cell.color != nil
+        cellView.layer?.backgroundColor = cell.color
         return cellView
     }
     
@@ -268,6 +272,9 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
                 return ("\(ivPercent)", backgroundColor(forIvPercent: CGFloat(ivPercent) / CGFloat(100.0)))
             }
             let range = thisPokémon.ivPercentRange
+            if range.max < range.min {
+                return ("unknown", nil)
+            }
             let color = backgroundColor(forIvPercent: CGFloat(range.max) / CGFloat(100.0))
             return ("\(range.min) - \(range.max)", color)
             

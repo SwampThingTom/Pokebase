@@ -36,6 +36,22 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         }
     }
     
+    func importFromCsv() {
+        let fileSelectionPanel = NSOpenPanel.init()
+        fileSelectionPanel.begin { (result) in
+            if result != NSFileHandlingPanelOKButton {
+                return
+            }
+            
+            guard let fileUrl = fileSelectionPanel.urls.first else {
+                return
+            }
+            
+            self.savedPokémon.importFromCsv(file: fileUrl)
+            self.refresh()
+        }
+    }
+    
     @IBAction func calculateIVs(sender: NSButton) {
         guard let ivCalculator = ivCalculator() else {
             return

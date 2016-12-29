@@ -1,0 +1,22 @@
+PODS:
+  - CSwiftV (0.0.5)
+
+DEPENDENCIES:
+  - CSwiftV (from `https://github.com/Daniel1of1/CSwiftV.git`, commit `a1a04d3`)
+
+EXTERNAL SOURCES:
+  CSwiftV:
+    :commit: a1a04d3
+    :git: https://github.com/Daniel1of1/CSwiftV.git
+
+CHECKOUT OPTIONS:
+  CSwiftV:
+    :commit: a1a04d3
+    :git: https://github.com/Daniel1of1/CSwiftV.git
+
+SPEC CHECKSUMS:
+  CSwiftV: 2560532e2e5b04d95c36b0f49a8dc745071fa525
+
+PODFILE CHECKSUM: 630e54efa9f2c730382d538506af1d14efbb4c40
+
+COCOAPODS: 1.1.1

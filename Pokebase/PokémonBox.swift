@@ -44,19 +44,20 @@ class PokémonBox: TrainerLevelProvider {
     init(file: URL? = nil) {
         do {
             fileUrl = try! file ?? PokémonBox.defaultPokémonFile()
+            
+            // For now, always backup on startup so user can recover to last good save
+            PokémonBox.backup(fileUrl)
+            
             let jsonData = try Data(contentsOf: fileUrl)
             let jsonDictionary = try JSONSerialization.jsonObject(with: jsonData) as! [String : Any]
             trainerLevel = jsonDictionary["Level"] as? Int ?? 1
             let pokémonArray = jsonDictionary["Pokémon"] as! [[String : Any]]
-            savedPokémon = pokémonArray.map({ (json: [String : Any]) -> Pokémon in
-                return Pokémon(json: json)!
-            })
+            savedPokémon = pokémonArray.map({ Pokémon(json: $0)! })
         }
         catch let error as NSError {
             if let cocoaError = error as? CocoaError {
                 if cocoaError.code != CocoaError.fileReadNoSuchFile {
                     print(error.localizedDescription);
-                    PokémonBox.backup(fileUrl)
                 }
             }
             trainerLevel = 1
@@ -64,6 +65,13 @@ class PokémonBox: TrainerLevelProvider {
             save()
         }
         Pokémon.trainerLevelProvider = self
+    }
+    
+    func importFromCsv(file: URL? = nil) {
+        let importFileUrl = try! file ?? PokémonBox.defaultPokémonCsvFile()
+        let pokémonArray = PokémonImporter.pokémonFromCsv(file: importFileUrl)
+        pokémonArray.forEach({ savedPokémon.append($0) })
+        save()        
     }
     
     func add(_ pokémonToAdd: Pokémon) {
@@ -243,7 +251,7 @@ class PokémonBox: TrainerLevelProvider {
     
     private static func backup(_ fileUrl: URL) {
         do {
-            try FileManager.default.moveItem(at: fileUrl, to: fileUrl.appendingPathExtension("bak"))
+            try FileManager.default.copyItem(at: fileUrl, to: fileUrl.appendingPathExtension("bak"))
         }
         catch let error as NSError {
             print(error.localizedDescription);
@@ -251,13 +259,22 @@ class PokémonBox: TrainerLevelProvider {
     }
     
     private static func defaultPokémonFile() throws -> URL {
-        let applicationSupportUrl = try FileManager.default.url(for: FileManager.SearchPathDirectory.applicationSupportDirectory,
+        let directoryUrl = try defaultPokémonDirectory()
+        try FileManager.default.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
+        return directoryUrl.appendingPathComponent("pokebase")
+    }
+    
+    private static func defaultPokémonCsvFile() throws -> URL {
+        let directoryUrl = try defaultPokémonDirectory()
+        return directoryUrl.appendingPathComponent("pokemon.csv")
+    }
+    
+    private static func defaultPokémonDirectory() throws -> URL {
+        let documentDirectoryUrl = try FileManager.default.url(for: FileManager.SearchPathDirectory.documentDirectory,
                                                                 in: FileManager.SearchPathDomainMask.userDomainMask,
                                                                 appropriateFor: nil,
                                                                 create: true)
-        let bundleId = Bundle.main.bundleIdentifier!
-        let directoryUrl = applicationSupportUrl.appendingPathComponent(bundleId, isDirectory: true)
-        try FileManager.default.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
-        return directoryUrl.appendingPathComponent("pokébase")
+        let directoryUrl = documentDirectoryUrl.appendingPathComponent("Pokébase", isDirectory: true)
+        return directoryUrl
     }
 }

@@ -14,7 +14,7 @@ protocol TrainerLevelProvider {
     var trainerLevel: Int { get }
 }
 
-struct Pokémon: Equatable {
+struct Pokémon {
     
     var name: String?
     let species: String
@@ -109,12 +109,16 @@ struct Pokémon: Equatable {
         self.ivs = self.possibleIvs.count == 1 ? self.possibleIvs[0] : nil
     }
     
-    init?(json: [String: Any]) {
-        guard let species = json["species"] as? String,
-            let cp = json["cp"] as? Int,
-            let hp = json["hp"] as? Int,
-            let dustPrice = json["dustPrice"] as? Int else {
-                return nil
+    init?(name: String?,
+          species: String,
+          cp: Int,
+          hp: Int,
+          dustPrice: Int,
+          isPoweredUp: Bool,
+          ivs: IndividualValues?) {
+        
+        if !Species.names.contains(species) {
+            return nil
         }
         
         self.species = species
@@ -124,8 +128,8 @@ struct Pokémon: Equatable {
         self.hp = hp
         self.dustPrice = dustPrice
         
-        self.name = json["name"] as! String?
-        self.poweredUp = json["poweredUp"] as? Bool ?? false
+        self.name = name
+        self.poweredUp = isPoweredUp
         
         self.ivCalculator = IVCalculator(species: self.species,
                                          cp: self.cp,
@@ -133,21 +137,29 @@ struct Pokémon: Equatable {
                                          dustPrice: self.dustPrice,
                                          poweredUp: self.poweredUp)
         
-        guard let ivs = json["ivs"] as? [String: Any] else {
-            self.possibleIvs = self.ivCalculator.derivePossibleIVs()
-            self.ivs = nil
-            return
-        }
-        
-        guard let level = ivs["level"] as? Double,
-            let atk = ivs["atk"] as? Int,
-            let def = ivs["def"] as? Int,
-            let sta = ivs["sta"] as? Int else {
+        self.ivs = ivs
+        self.possibleIvs = ivs == nil ? self.ivCalculator.derivePossibleIVs() : [self.ivs!]
+    }
+    
+    init?(json: [String: Any]) {
+        guard let species = json["species"] as? String,
+            let cp = json["cp"] as? Int,
+            let hp = json["hp"] as? Int,
+            let dustPrice = json["dustPrice"] as? Int else {
                 return nil
         }
         
-        self.ivs = (level: level, atk: atk, def: def, sta: sta)
-        self.possibleIvs = [self.ivs!]
+        let name = json["name"] as! String?
+        let isPoweredUp = json["poweredUp"] as? Bool ?? false
+        let ivs = Pokémon.ivsFromJsonDictionary(json["ivs"] as! [String : Any]?)
+        
+        self.init(name: name,
+                  species: species,
+                  cp: cp,
+                  hp: hp,
+                  dustPrice: dustPrice,
+                  isPoweredUp: isPoweredUp,
+                  ivs: ivs)
     }
     
     func toJson() -> [String: Any] {
@@ -166,18 +178,19 @@ struct Pokémon: Equatable {
     static func percentOfMax(ivs: IndividualValues) -> Int {
         return Int(round(100.0 * Double(ivs.atk + ivs.def + ivs.sta) / 45.0))
     }
-
-    // MARK: Equatable
     
-    static func ==(lhs: Pokémon, rhs: Pokémon) -> Bool {
-        return lhs.id == rhs.id
-    }
-    
-    private let id = Pokémon.nextUniqueId()
-    
-    private static var lastUniqueId = 0
-    private static func nextUniqueId() -> Int {
-        lastUniqueId += 1
-        return lastUniqueId
+    private static func ivsFromJsonDictionary(_ dictionary: [String : Any]?) -> IndividualValues? {
+        guard let ivs = dictionary else {
+            return nil
+        }
+        
+        guard let level = ivs["level"] as? Double,
+            let atk = ivs["atk"] as? Int,
+            let def = ivs["def"] as? Int,
+            let sta = ivs["sta"] as? Int else {
+                return nil
+        }
+        
+        return (level: level, atk: atk, def: def, sta: sta)
     }
 }

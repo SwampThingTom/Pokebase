@@ -17,7 +17,6 @@
 		E274B1671E01790E00160096 /* PokémonBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = E274B1661E01790E00160096 /* PokémonBox.swift */; };
 		E2ED37241DFC52FB00705551 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37231DFC52FB00705551 /* AppDelegate.swift */; };
 		E2ED37261DFC52FB00705551 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37251DFC52FB00705551 /* ViewController.swift */; };
-		E2ED37291DFC52FB00705551 /* Pokebase.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37271DFC52FB00705551 /* Pokebase.xcdatamodeld */; };
 		E2ED372B1DFC52FB00705551 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2ED372A1DFC52FB00705551 /* Assets.xcassets */; };
 		E2ED372E1DFC52FB00705551 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E2ED372C1DFC52FB00705551 /* Main.storyboard */; };
 		E2ED37391DFC52FB00705551 /* PokebaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2ED37381DFC52FB00705551 /* PokebaseTests.swift */; };
@@ -60,7 +59,6 @@
 		E2ED37201DFC52FB00705551 /* Pokebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pokebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2ED37231DFC52FB00705551 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E2ED37251DFC52FB00705551 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		E2ED37281DFC52FB00705551 /* Pokebase.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Pokebase.xcdatamodel; sourceTree = "<group>"; };
 		E2ED372A1DFC52FB00705551 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E2ED372D1DFC52FB00705551 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E2ED372F1DFC52FB00705551 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -152,15 +150,14 @@
 				E2ED37231DFC52FB00705551 /* AppDelegate.swift */,
 				E2ED37251DFC52FB00705551 /* ViewController.swift */,
 				E274B1661E01790E00160096 /* PokémonBox.swift */,
-				E2ED37511DFC727400705551 /* Species.swift */,
+				E2569F4E1E156B1C00224956 /* PokémonImporter.swift */,
 				E274B1601DFDA28700160096 /* Pokémon.swift */,
 				E274B1641E00224100160096 /* IVCalculator.swift */,
+				E2ED37511DFC727400705551 /* Species.swift */,
 				E274B1621DFDB5C300160096 /* Dictionary+Map.swift */,
 				E2ED372A1DFC52FB00705551 /* Assets.xcassets */,
 				E2ED372C1DFC52FB00705551 /* Main.storyboard */,
 				E2ED372F1DFC52FB00705551 /* Info.plist */,
-				E2ED37271DFC52FB00705551 /* Pokebase.xcdatamodeld */,
-				E2569F4E1E156B1C00224956 /* PokémonImporter.swift */,
 			);
 			path = Pokebase;
 			sourceTree = "<group>";
@@ -472,7 +469,6 @@
 				E274B1651E00224100160096 /* IVCalculator.swift in Sources */,
 				E2ED37241DFC52FB00705551 /* AppDelegate.swift in Sources */,
 				E274B1631DFDB5C300160096 /* Dictionary+Map.swift in Sources */,
-				E2ED37291DFC52FB00705551 /* Pokebase.xcdatamodeld in Sources */,
 				E2569F4F1E156B1C00224956 /* PokémonImporter.swift in Sources */,
 				E274B1671E01790E00160096 /* PokémonBox.swift in Sources */,
 			);
@@ -747,19 +743,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		E2ED37271DFC52FB00705551 /* Pokebase.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				E2ED37281DFC52FB00705551 /* Pokebase.xcdatamodel */,
-			);
-			currentVersion = E2ED37281DFC52FB00705551 /* Pokebase.xcdatamodel */;
-			path = Pokebase.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = E2ED37181DFC52FB00705551 /* Project object */;
 }

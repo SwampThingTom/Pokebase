@@ -251,7 +251,16 @@ class PokémonBox: TrainerLevelProvider {
     
     private static func backup(_ fileUrl: URL) {
         do {
-            try FileManager.default.copyItem(at: fileUrl, to: fileUrl.appendingPathExtension("bak"))
+            if !FileManager.default.fileExists(atPath: fileUrl.path) {
+                return
+            }
+            
+            let backupFileUrl = fileUrl.appendingPathExtension("bak")
+            if FileManager.default.fileExists(atPath: backupFileUrl.path) {
+                try FileManager.default.removeItem(at: backupFileUrl)
+            }
+            
+            try FileManager.default.copyItem(at: fileUrl, to: backupFileUrl)
         }
         catch let error as NSError {
             print(error.localizedDescription);

@@ -143,7 +143,7 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         return "Total Pokémon: \(numberOfPokémon)     Unique Species: \(numberOfSpecies)"
     }
     
-    // MARK: NSControlTextEditingDelegate
+    // MARK: - NSControlTextEditingDelegate
     
     func control(_ control: NSControl, textShouldEndEditing fieldEditor: NSText) -> Bool {
         guard let identifier = control.identifier else {

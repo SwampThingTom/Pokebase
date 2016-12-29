@@ -8,8 +8,15 @@
 
 import Foundation
 
+/// Model object for the user's currently saved Pokémon.
 class PokémonBox: TrainerLevelProvider {
- 
+    
+    private var savedPokémon: [Pokémon]
+    private let fileUrl: URL
+
+    // MARK: - Public
+    
+    /// The trainer's level
     var trainerLevel: Int {
         didSet {
             if trainerLevel != oldValue {
@@ -18,12 +25,14 @@ class PokémonBox: TrainerLevelProvider {
         }
     }
     
+    /// Number of Pokémon in box
     var count: Int {
         get {
             return savedPokémon.count
         }
     }
     
+    /// Number of unique species in box
     var uniqueSpeciesCount: Int {
         get {
             let species = savedPokémon.map { $0.species }
@@ -32,15 +41,14 @@ class PokémonBox: TrainerLevelProvider {
         }
     }
     
+    /// The Pokémon at the given index
     subscript(index: Int) -> Pokémon {
         get {
             return savedPokémon[index]
         }
     }
     
-    private var savedPokémon: [Pokémon]
-    private let fileUrl: URL
-    
+    /// Initialize PokémonBox from saved JSON file
     init(file: URL? = nil) {
         do {
             fileUrl = try! file ?? PokémonBox.defaultPokémonFile()
@@ -51,6 +59,7 @@ class PokémonBox: TrainerLevelProvider {
             let jsonData = try Data(contentsOf: fileUrl)
             let jsonDictionary = try JSONSerialization.jsonObject(with: jsonData) as! [String : Any]
             trainerLevel = jsonDictionary["Level"] as? Int ?? 1
+            
             let pokémonArray = jsonDictionary["Pokémon"] as! [[String : Any]]
             savedPokémon = pokémonArray.map({ Pokémon(json: $0)! })
         }
@@ -67,6 +76,7 @@ class PokémonBox: TrainerLevelProvider {
         Pokémon.trainerLevelProvider = self
     }
     
+    /// Import Pokémon from CSV file
     func importFromCsv(file: URL? = nil) {
         let importFileUrl = try! file ?? PokémonBox.defaultPokémonCsvFile()
         let pokémonArray = PokémonImporter.pokémonFromCsv(file: importFileUrl)
@@ -74,22 +84,27 @@ class PokémonBox: TrainerLevelProvider {
         save()        
     }
     
+    /// Add a Pokémon to the box
     func add(_ pokémonToAdd: Pokémon) {
         savedPokémon.append(pokémonToAdd)
         save()
     }
     
+    /// Remove the Pokémon at the given index from the box
     func remove(at index: Int) {
         savedPokémon.remove(at: index)
         save()
     }
     
+    /// Sort the box
     func sort(using descriptors: [NSSortDescriptor]) {
         guard let descriptor = descriptors.first else {
             return
         }
         sort(using: descriptor)
     }
+    
+    // MARK: - Sorting
     
     private func sort(using descriptor: NSSortDescriptor) {
         guard let key = descriptor.key else {
@@ -232,6 +247,8 @@ class PokémonBox: TrainerLevelProvider {
             return ascending ? a < b : a > b
         })
     }
+    
+    // MARK: - File management
     
     private func save() {
         let pokémonArray = savedPokémon.map { (pokémon: Pokémon) -> [String : Any] in

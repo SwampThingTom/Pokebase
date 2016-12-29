@@ -8,6 +8,8 @@
 
 import Foundation
 
+/// An IVCalculator instance is used to calculate possible or actual Individual Values based on
+/// Species, CP, HP, Dust Price, and whether the Pokémon has ever been powered up.
 struct IVCalculator {
     
     static let ivRange = 0...15

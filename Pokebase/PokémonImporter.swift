@@ -11,6 +11,20 @@ import CSwiftV
 
 struct PokémonImporter {
     
+    /// Return an array of Pokémon from a CSV file.
+    ///
+    /// Each line of the file should have fields in the following order:
+    /// - Name
+    /// - Species
+    /// - CP
+    /// - HP
+    /// - Dust Price
+    /// - Powered Up?  ("TRUE" or "YES" if the Pokémon has ever been powered up)
+    /// - Level        (if known)
+    /// - ATK          (if known)
+    /// - DEF          (if known)
+    /// - STA          (if known)
+    ///
     static func pokémonFromCsv(file: URL) -> [Pokémon] {
         var pokémonArray = [Pokémon]()
         

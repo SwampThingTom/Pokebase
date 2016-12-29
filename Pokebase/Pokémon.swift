@@ -14,36 +14,60 @@ protocol TrainerLevelProvider {
     var trainerLevel: Int { get }
 }
 
+/// An individual Pokémon.
 struct Pokémon {
     
+    /// User-provided name for Pokémon
     var name: String?
+    
+    /// Pokémon species
     let species: String
+    
+    /// Pokédex number
     let pokédex: Int?
+    
+    /// Combat Power
     let cp: Int
+    
+    /// Hit Points
     let hp: Int
+    
+    /// Dust price for powering up
     let dustPrice: Int
+    
+    /// Has this Pokémon been powered up?
     let poweredUp: Bool
+    
+    /// Individual Values (if known)
     let ivs: IndividualValues?
     
+    /// Individual Value Calculator for this Pokémon
     let ivCalculator: IVCalculator
+    
+    /// All possible Individual Values based on CP, HP, and Dust Price
     let possibleIvs: [IndividualValues]
     
+    /// Pokémon level (if known)
     var level: Double? {
         return ivs?.level
     }
     
+    /// Attack IV (if known)
     var atk: Int? {
         return ivs?.atk
     }
     
+    /// Defense IV (if known)
     var def: Int? {
         return ivs?.def
     }
 
+    /// Stamina IV (if known)
     var sta: Int? {
         return ivs?.sta
     }
 
+    /// How close IVs are to perfect (0 = terrible, 100 = perfect), if known
     var ivPercent: Int? {
         guard let ivs = ivs else {
             return nil
@@ -51,6 +75,7 @@ struct Pokémon {
         return Pokémon.percentOfMax(ivs: ivs)
     }
     
+    /// Range of IV percentages based on possible IVs
     var ivPercentRange: MinMaxRange {
         return possibleIvs.reduce((min: 100, max: 0), { (range, ivs) -> MinMaxRange in
             let ivPercent = Pokémon.percentOfMax(ivs: ivs)
@@ -58,6 +83,7 @@ struct Pokémon {
         })
     }
     
+    /// The CP of this Pokémon if it had perfect IVs
     var perfectCP: Int? {
         guard let level = ivs?.level else {
             return nil
@@ -65,6 +91,7 @@ struct Pokémon {
         return ivCalculator.calcCP(forLevel: level, atk: 15, def: 15, sta: 15)
     }
     
+    /// The CP of this Pokémon if it were powered up to the maximum based on the trainer's current level
     var poweredUpCP: Int? {
         guard let ivs = ivs, let maxLevel = maxLevel else {
             return nil
@@ -72,6 +99,7 @@ struct Pokémon {
         return ivCalculator.calcCP(forLevel: maxLevel, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
     }
     
+    /// The CP of this Pokémon if it were fully evolved and powered up to the maximum based on the trainer's current level
     var maxCP: Int? {
         guard let ivs = ivs,
             let maxLevel = maxLevel,
@@ -86,8 +114,10 @@ struct Pokémon {
         return evolvedCalculator.calcCP(forLevel: maxLevel, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
     }
     
+    /// An object that provides the current trainer level
     static var trainerLevelProvider: TrainerLevelProvider?
     
+    /// The maximum level for the Pokémon based on the current trainer level
     var maxLevel: Double? {
         guard let trainerLevel = Pokémon.trainerLevelProvider?.trainerLevel else {
             return nil

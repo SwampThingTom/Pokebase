@@ -38,6 +38,9 @@ struct Pokémon {
     /// Has this Pokémon been powered up?
     let poweredUp: Bool
     
+    /// Trainer appraisal
+    let appraisal: StatsAppraisal
+    
     /// Individual Values (if known)
     let ivs: IndividualValues?
     
@@ -110,8 +113,9 @@ struct Pokémon {
                                              cp: cp,
                                              hp: hp,
                                              dustPrice: dustPrice,
-                                             poweredUp: poweredUp)
-        return evolvedCalculator.calcCP(forLevel: maxLevel, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
+                                             poweredUp: poweredUp,
+                                             appraisal: appraisal)
+        return evolvedCalculator?.calcCP(forLevel: maxLevel, atk: ivs.atk, def: ivs.def, sta: ivs.sta)
     }
     
     /// An object that provides the current trainer level
@@ -134,6 +138,7 @@ struct Pokémon {
         self.dustPrice = pokémon.dustPrice
         self.poweredUp = pokémon.poweredUp
         
+        self.appraisal = pokémon.appraisal
         self.ivCalculator = pokémon
         self.possibleIvs = pokémon.derivePossibleIVs()
         self.ivs = self.possibleIvs.count == 1 ? self.possibleIvs[0] : nil
@@ -145,6 +150,7 @@ struct Pokémon {
           hp: Int,
           dustPrice: Int,
           isPoweredUp: Bool,
+          appraisal: StatsAppraisal,
           ivs: IndividualValues?) {
         
         if !Species.names.contains(species) {
@@ -160,12 +166,14 @@ struct Pokémon {
         
         self.name = name
         self.poweredUp = isPoweredUp
+        self.appraisal = appraisal
         
         self.ivCalculator = IVCalculator(species: self.species,
                                          cp: self.cp,
                                          hp: self.hp,
                                          dustPrice: self.dustPrice,
-                                         poweredUp: self.poweredUp)
+                                         poweredUp: self.poweredUp,
+                                         appraisal: appraisal)!
         
         self.ivs = ivs
         self.possibleIvs = ivs == nil ? self.ivCalculator.derivePossibleIVs() : [self.ivs!]
@@ -181,6 +189,7 @@ struct Pokémon {
         
         let name = json["name"] as! String?
         let isPoweredUp = json["poweredUp"] as? Bool ?? false
+        let appraisal = Pokémon.appraisalFromJsonDictionary(json["appraisal"] as! [String : Any]?)
         let ivs = Pokémon.ivsFromJsonDictionary(json["ivs"] as! [String : Any]?)
         
         self.init(name: name,
@@ -189,6 +198,7 @@ struct Pokémon {
                   hp: hp,
                   dustPrice: dustPrice,
                   isPoweredUp: isPoweredUp,
+                  appraisal: appraisal,
                   ivs: ivs)
     }
     
@@ -199,14 +209,47 @@ struct Pokémon {
                                    "hp": hp,
                                    "dustPrice": dustPrice,
                                    "poweredUp": poweredUp]
+        
+        if appraisal.appraisal != .Unknown {
+            json["appraisal"] = [
+                "appraisal": appraisal.appraisal.stringValue,
+                "atk": appraisal.atkIsBest,
+                "def": appraisal.defIsBest,
+                "sta": appraisal.staIsBest,
+                "best": appraisal.bestStat.stringValue]
+        }
+        
         if let ivs = self.ivs {
             json["ivs"] = ["level": ivs.level, "atk": ivs.atk, "def": ivs.def, "sta": ivs.sta]
         }
+        
         return json
     }
     
     static func percentOfMax(ivs: IndividualValues) -> Int {
         return Int(round(100.0 * Double(ivs.atk + ivs.def + ivs.sta) / 45.0))
+    }
+    
+    private static func appraisalFromJsonDictionary(_ dictionary: [String : Any]?) -> StatsAppraisal {
+        guard let appraisal = dictionary else {
+            return StatsAppraisal.None
+        }
+        
+        guard let ivAppraisalString = appraisal["appraisal"] as? String,
+            let ivAppraisal = StatsAppraisal.Appraisal.fromString(ivAppraisalString),
+            let atkIsBest = appraisal["atk"] as? Bool,
+            let defIsBest = appraisal["def"] as? Bool,
+            let staIsBest = appraisal["sta"] as? Bool,
+            let bestStatString = appraisal["best"] as? String,
+            let bestStat = StatsAppraisal.BestStat.fromString(bestStatString) else {
+                return StatsAppraisal.None
+        }
+        
+        return StatsAppraisal(appraisal: ivAppraisal,
+                              bestStat: bestStat,
+                              atk: atkIsBest,
+                              def: defIsBest,
+                              sta: staIsBest)
     }
     
     private static func ivsFromJsonDictionary(_ dictionary: [String : Any]?) -> IndividualValues? {

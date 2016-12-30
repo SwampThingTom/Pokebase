@@ -16,11 +16,65 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     @IBOutlet weak var hpField: NSTextField!
     @IBOutlet weak var dustField: NSPopUpButton!
     @IBOutlet weak var isPoweredUpField: NSPopUpButton!
+    @IBOutlet weak var appraisalField: NSPopUpButton!
+    @IBOutlet weak var isAttBestField: NSButton!
+    @IBOutlet weak var isDefBestField: NSButton!
+    @IBOutlet weak var isHpBestField: NSButton!
+    @IBOutlet weak var bestStatField: NSPopUpButton!
     @IBOutlet weak var resultLabel: NSTextField!
     @IBOutlet weak var statusLabel: NSTextField!
     @IBOutlet weak var tableView: NSTableView!
     
     private var savedPokémon = PokémonBox()
+    
+    private var selectedAppraisal: StatsAppraisal.Appraisal {
+        get {
+            guard let appraisal = StatsAppraisal.Appraisal(rawValue: appraisalField.indexOfSelectedItem) else {
+                return StatsAppraisal.Appraisal.Unknown
+            }
+            return appraisal
+        }
+    }
+    
+    private var selectedBestStat: StatsAppraisal.BestStat {
+        get {
+            guard let bestStat = StatsAppraisal.BestStat(rawValue: bestStatField.indexOfSelectedItem) else {
+                return StatsAppraisal.BestStat.Best
+            }
+            return bestStat
+        }
+    }
+    
+    private var isAtkBest: Bool {
+        get {
+            return isAttBestField.state == NSOnState
+        }
+    }
+    
+    private var isDefBest: Bool {
+        get {
+            return isDefBestField.state == NSOnState
+        }
+    }
+    
+    private var isStaBest: Bool {
+        get {
+            return isHpBestField.state == NSOnState
+        }
+    }
+    
+    private var appraisal: StatsAppraisal {
+        get {
+            if selectedAppraisal == .Unknown {
+                return StatsAppraisal.None
+            }
+            return StatsAppraisal(appraisal: selectedAppraisal,
+                                  bestStat: selectedBestStat,
+                                  atk: isAtkBest,
+                                  def: isDefBest,
+                                  sta: isStaBest)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,7 +162,12 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         let hp = hpField.integerValue
         let poweredUp = isPoweredUpField.titleOfSelectedItem == "Yes"
         
-        let calculator = IVCalculator(species: species, cp: cp, hp: hp, dustPrice: dust, poweredUp: poweredUp)
+        let calculator = IVCalculator(species: species,
+                                      cp: cp,
+                                      hp: hp,
+                                      dustPrice: dust,
+                                      poweredUp: poweredUp,
+                                      appraisal: appraisal)
         return calculator
     }
     
@@ -141,6 +200,16 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         let numberOfPokémon = savedPokémon.count
         let numberOfSpecies = savedPokémon.uniqueSpeciesCount
         return "Total Pokémon: \(numberOfPokémon)     Unique Species: \(numberOfSpecies)"
+    }
+    
+    // MARK: - Appraisal
+    
+    @IBAction func appraisalChanged(_ sender: NSPopUpButton) {
+        let enableAppraisal = sender.indexOfSelectedItem != StatsAppraisal.Appraisal.Unknown.rawValue
+        isAttBestField.isEnabled = enableAppraisal
+        isDefBestField.isEnabled = enableAppraisal
+        isHpBestField.isEnabled = enableAppraisal
+        bestStatField.isEnabled = enableAppraisal
     }
     
     // MARK: - NSControlTextEditingDelegate

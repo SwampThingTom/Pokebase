@@ -71,7 +71,14 @@ struct PokémonImporter {
         let isPoweredUp = boolFromString(dictionary["Powered Up?"])
         let ivs = ivsFromDictionary(dictionary)
         
-        return Pokémon(name: name, species: species, cp: cp, hp: hp, dustPrice: dustPrice, isPoweredUp: isPoweredUp, ivs: ivs)
+        return Pokémon(name: name,
+                         species: species,
+                         cp: cp,
+                         hp: hp,
+                         dustPrice: dustPrice,
+                         isPoweredUp: isPoweredUp,
+                         appraisal: StatsAppraisal.None,
+                         ivs: ivs)
     }
     
     private static func boolFromString(_ stringValue: String?) -> Bool {

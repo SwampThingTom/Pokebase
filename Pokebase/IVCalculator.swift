@@ -11,35 +11,32 @@ import Foundation
 /// An IVCalculator instance is used to calculate possible or actual Individual Values based on
 /// Species, CP, HP, Dust Price, and whether the Pokémon has ever been powered up.
 struct IVCalculator {
-    
-    static let ivRange = 0...15
 
     let species: String
     let cp: Int
     let hp: Int
     let dustPrice: Int
     let poweredUp: Bool
+    let appraisal: StatsAppraisal
     
     private let baseATK: Int
     private let baseDEF: Int
     private let baseSTA: Int
     
-    init(species: String, cp: Int, hp: Int, dustPrice: Int, poweredUp: Bool) {
+    init?(species: String, cp: Int, hp: Int, dustPrice: Int, poweredUp: Bool, appraisal: StatsAppraisal) {
+        guard let baseStats = Species.baseStats(forSpecies: species) else {
+            return nil
+        }
+        
         self.species = species
         self.cp = cp
         self.hp = hp
         self.dustPrice = dustPrice
         self.poweredUp = poweredUp
-        
-        if let baseStats = Species.baseStats(forSpecies: species) {
-            self.baseATK = baseStats.atk
-            self.baseDEF = baseStats.def
-            self.baseSTA = baseStats.sta
-        } else {
-            self.baseATK = 0
-            self.baseDEF = 0
-            self.baseSTA = 0
-        }
+        self.appraisal = appraisal
+        self.baseATK = baseStats.atk
+        self.baseDEF = baseStats.def
+        self.baseSTA = baseStats.sta
     }
     
     func derivePossibleIVs() -> [IndividualValues] {
@@ -54,7 +51,7 @@ struct IVCalculator {
             possibleIVs.append(contentsOf: self.possibleIVsForLevel(level))
         }
         
-        return possibleIVs
+        return possibleIVs.filter({ return appraisal.isValid(iv: $0) })
     }
     
     func calcCP(forLevel level: Double, atk: Int, def: Int, sta: Int) -> Int {
@@ -73,8 +70,8 @@ struct IVCalculator {
         var possibleIVs = [IndividualValues]()
         let possibleSTAs = self.possibleSTAs(level: level)
         for sta in possibleSTAs {
-            for def in IVCalculator.ivRange {
-                for atk in IVCalculator.ivRange {
+            for def in appraisal.defRange {
+                for atk in appraisal.atkRange {
                     let possibleCP = self.calcCP(forLevel: level, atk: atk, def: def, sta: sta)
                     if possibleCP == cp {
                         possibleIVs.append((level: level, atk: atk, def: def, sta: sta))
@@ -86,13 +83,13 @@ struct IVCalculator {
     }
     
     private func possibleSTAs(level: Double) -> [Int] {
-        let minHp = self.calcHP(forLevel: level, sta: IVCalculator.ivRange.lowerBound)
-        let maxHp = self.calcHP(forLevel: level, sta: IVCalculator.ivRange.upperBound)
+        let minHp = self.calcHP(forLevel: level, sta: appraisal.staRange.lowerBound)
+        let maxHp = self.calcHP(forLevel: level, sta: appraisal.staRange.upperBound)
         if hp < minHp || hp > maxHp {
             return []
         }
         
-        return IVCalculator.ivRange.filter( { return self.calcHP(forLevel: level, sta: $0) == hp } )
+        return appraisal.staRange.filter( { return self.calcHP(forLevel: level, sta: $0) == hp } )
     }
     
     private func calcHP(forLevel level: Double, sta: Int) -> Int {

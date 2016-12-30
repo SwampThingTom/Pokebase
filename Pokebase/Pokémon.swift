@@ -164,7 +164,7 @@ struct Pokémon {
         self.hp = hp
         self.dustPrice = dustPrice
         
-        self.name = name
+        self.name = name?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         self.poweredUp = isPoweredUp
         self.appraisal = appraisal
         

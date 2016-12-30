@@ -8,6 +8,12 @@
 
 import Foundation
 
+extension Int {
+    init(_ bool: Bool) {
+        self = bool ? 1 : 0
+    }
+}
+
 /// Model object for the user's currently saved Pokémon.
 class PokémonBox: TrainerLevelProvider {
     
@@ -124,6 +130,8 @@ class PokémonBox: TrainerLevelProvider {
             sortByHP(ascending: descriptor.ascending)
         case "dustPrice":
             sortByDustPrice(ascending: descriptor.ascending)
+        case "isPoweredUp":
+            sortByIsPoweredUp(ascending: descriptor.ascending)
         case "level":
             sortByLevel(ascending: descriptor.ascending)
         case "atk":
@@ -190,6 +198,10 @@ class PokémonBox: TrainerLevelProvider {
     
     private func sortByDustPrice(ascending: Bool) {
         savedPokémon.sort(by: { ascending ? $0.dustPrice < $1.dustPrice : $0.dustPrice > $1.dustPrice })
+    }
+    
+    private func sortByIsPoweredUp(ascending: Bool) {
+        savedPokémon.sort(by: { ascending ? Int($0.poweredUp) < Int($1.poweredUp) : Int($0.poweredUp) > Int($1.poweredUp) })
     }
     
     private func sortByLevel(ascending: Bool) {

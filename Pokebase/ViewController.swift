@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBoxDataSource, NSTableViewDelegate, NSTableViewDataSource {
+class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBoxDataSource, NSComboBoxDelegate, NSTableViewDelegate, NSTableViewDataSource {
 
     @IBOutlet weak var trainerLevelField: NSTextField!
     @IBOutlet weak var pokémonField: NSComboBox!
@@ -259,6 +259,16 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         return Species.names[index]
     }
     
+    func comboBoxSelectionDidChange(_ notification: Notification) {
+        let pokémonIndex = pokémonField.indexOfSelectedItem
+        if pokémonIndex < 0 {
+            return
+        }
+        
+        let species = Species.names[pokémonIndex]
+        scroll(toSpecies: species)
+    }
+    
     // MARK: - TableView Delegate
     
     func numberOfRows(in tableView: NSTableView) -> Int {
@@ -285,6 +295,32 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     func tableView(_ tableView: NSTableView, sortDescriptorsDidChange oldDescriptors: [NSSortDescriptor]) {
         savedPokémon.sort(using: tableView.sortDescriptors)
         tableView.reloadData()
+    }
+    
+    func scroll(toSpecies species: String) {
+        guard let speciesRow = savedPokémon.indexOfFirst(species: species) else {
+            return
+        }
+        
+        guard let visibleRows = visibleRows() else {
+            return
+        }
+        
+        if visibleRows.contains(speciesRow) {
+            return
+        }
+        
+        let headerHeight = tableView.headerView?.headerRect(ofColumn: 0).height ?? 0
+        let rowRect = tableView.rect(ofRow: speciesRow)
+        let rowOrigin = CGPoint(x: rowRect.origin.x,
+                                y: rowRect.origin.y - headerHeight)
+        tableView.scroll(rowOrigin)
+    }
+    
+    func visibleRows() -> Range<Int>? {
+        let visibleRect = tableView.visibleRect
+        let visibleRows = tableView.rows(in: visibleRect)
+        return visibleRows.toRange()
     }
     
     /// MARK: - TableView Cell Configuration

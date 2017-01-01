@@ -110,6 +110,11 @@ class PokémonBox: TrainerLevelProvider {
         sort(using: descriptor)
     }
     
+    /// Find first index containing given species
+    func indexOfFirst(species: String) -> Int? {
+        return savedPokémon.index(where: { $0.species == species })
+    }
+    
     // MARK: - Sorting
     
     private func sort(using descriptor: NSSortDescriptor) {

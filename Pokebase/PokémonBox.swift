@@ -115,6 +115,11 @@ class PokémonBox: TrainerLevelProvider {
         return savedPokémon.index(where: { $0.species == species })
     }
     
+    func updatePokémon(at index: Int, name: String) {
+        savedPokémon[index].name = name
+        save()
+    }
+    
     // MARK: - Sorting
     
     private func sort(using descriptor: NSSortDescriptor) {

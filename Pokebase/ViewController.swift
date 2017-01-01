@@ -269,6 +269,16 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         scroll(toSpecies: species)
     }
     
+    // MARK: - Name DidEndEditing
+    
+    @IBAction func nameDidEndEditing(_ sender: NSTextField) {
+        let index = tableView.row(for: sender)
+        if index < 0 {
+            return
+        }
+        savedPokémon.updatePokémon(at: index, name: sender.stringValue)
+    }
+        
     // MARK: - TableView Delegate
     
     func numberOfRows(in tableView: NSTableView) -> Int {

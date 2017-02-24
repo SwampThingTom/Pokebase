@@ -280,7 +280,7 @@ class PokémonBox: TrainerLevelProvider {
         let jsonDictionary = ["Level": trainerLevel, "Pokémon": pokémonArray] as [String : Any]
         
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary)
+            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary, options: .prettyPrinted)
             try jsonData.write(to: fileUrl)
         }
         catch let error as NSError {

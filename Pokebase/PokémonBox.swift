@@ -47,6 +47,38 @@ class PokémonBox: TrainerLevelProvider {
         }
     }
     
+    /// Number of unique gen 1 species in box
+    var gen1SpeciesCaughtCount: Int {
+        get {
+            let species = savedPokémon.map { $0.species }.filter({ Species.gen1.contains($0) })
+            let uniqueSpecies = Set(species)
+            return uniqueSpecies.count
+        }
+    }
+    
+    /// Number of total gen 1 species available
+    var gen1SpeciesTotalCount: Int {
+        get {
+            return Species.gen1.count
+        }
+    }
+    
+    /// Number of unique gen 2 species in box
+    var gen2SpeciesCaughtCount: Int {
+        get {
+            let species = savedPokémon.map { $0.species }.filter({ Species.gen2.contains($0) })
+            let uniqueSpecies = Set(species)
+            return uniqueSpecies.count
+        }
+    }
+    
+    /// Number of total gen 2 species available
+    var gen2SpeciesTotalCount: Int {
+        get {
+            return Species.gen2.count
+        }
+    }
+    
     /// The Pokémon at the given index
     subscript(index: Int) -> Pokémon {
         get {

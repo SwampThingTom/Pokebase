@@ -22,7 +22,10 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     @IBOutlet weak var isHpBestField: NSButton!
     @IBOutlet weak var bestStatField: NSPopUpButton!
     @IBOutlet weak var resultLabel: NSTextField!
-    @IBOutlet weak var statusLabel: NSTextField!
+    @IBOutlet weak var totalPokémonLabel: NSTextField!
+    @IBOutlet weak var totalSpeciesLabel: NSTextField!
+    @IBOutlet weak var gen1Label: NSTextField!
+    @IBOutlet weak var gen2Label: NSTextField!
     @IBOutlet weak var tableView: NSTableView!
     
     private var savedPokémon = PokémonBox()
@@ -80,7 +83,7 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         super.viewDidLoad()
         trainerLevelField.stringValue = "\(savedPokémon.trainerLevel)"
         pokémonField.selectItem(at: 0)
-        statusLabel.stringValue = statusString()
+        updateLabels()
         tableView.sortDescriptors = [NSSortDescriptor(key: "pokédex", ascending: true)]
     }
 
@@ -193,13 +196,36 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
     
     private func refresh() {
         tableView.reloadData()
-        statusLabel.stringValue = statusString()
+        updateLabels()
     }
     
-    private func statusString() -> String {
+    private func updateLabels() {
+        totalPokémonLabel.stringValue = totalPokémonString()
+        totalSpeciesLabel.stringValue = totalSpeciesString()
+        gen1Label.stringValue = gen1SpeciesString()
+        gen2Label.stringValue = gen2SpeciesString()
+    }
+    
+    private func totalPokémonString() -> String {
         let numberOfPokémon = savedPokémon.count
+        return "Total Pokémon: \(numberOfPokémon)"
+    }
+    
+    private func totalSpeciesString() -> String {
         let numberOfSpecies = savedPokémon.uniqueSpeciesCount
-        return "Total Pokémon: \(numberOfPokémon)     Unique Species: \(numberOfSpecies)"
+        return "Unique Species: \(numberOfSpecies)"
+    }
+    
+    private func gen1SpeciesString() -> String {
+        let numberOfGen1SpeciesCaught = savedPokémon.gen1SpeciesCaughtCount
+        let totalNumberOfGen1Species = savedPokémon.gen1SpeciesTotalCount
+        return "Gen 1: \(numberOfGen1SpeciesCaught) / \(totalNumberOfGen1Species)"
+    }
+    
+    private func gen2SpeciesString() -> String {
+        let numberOfGen2SpeciesCaught = savedPokémon.gen2SpeciesCaughtCount
+        let totalNumberOfGen2Species = savedPokémon.gen2SpeciesTotalCount
+        return "Gen 2: \(numberOfGen2SpeciesCaught) / \(totalNumberOfGen2Species)"
     }
     
     // MARK: - Appraisal

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1212" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1217" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11201"/>
@@ -509,14 +509,6 @@
                                     </constraints>
                                 </view>
                             </box>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jWN-fx-eYb">
-                                <rect key="frame" x="18" y="20" width="1064" height="17"/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Total Pokémon: 0     Unique Species: 0" id="zSB-A9-6mK">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gp9-cY-Yzw">
                                 <rect key="frame" x="20" y="45" width="1060" height="354"/>
                                 <clipView key="contentView" id="UNu-AO-WZV">
@@ -1126,17 +1118,60 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jWN-fx-eYb">
+                                <rect key="frame" x="18" y="20" width="263" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Total Pokémon: " id="zSB-A9-6mK">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="e4h-zy-gbp">
+                                <rect key="frame" x="285" y="20" width="263" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Unique Species: " id="2mr-FO-OUw">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="k35-KA-xGy">
+                                <rect key="frame" x="552" y="20" width="263" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Gen 1: " id="TKm-37-OKI">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="12I-kT-HWw">
+                                <rect key="frame" x="819" y="20" width="263" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Gen 2: " id="wgg-4v-p7Y">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="e4h-zy-gbp" firstAttribute="leading" secondItem="jWN-fx-eYb" secondAttribute="trailing" constant="8" symbolic="YES" id="0O1-VJ-elP"/>
+                            <constraint firstItem="e4h-zy-gbp" firstAttribute="width" secondItem="jWN-fx-eYb" secondAttribute="width" id="9eJ-x7-sBa"/>
                             <constraint firstAttribute="bottom" secondItem="jWN-fx-eYb" secondAttribute="bottom" constant="20" symbolic="YES" id="9sj-zr-A6g"/>
                             <constraint firstItem="gp9-cY-Yzw" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="BMr-41-GeK"/>
-                            <constraint firstAttribute="trailing" secondItem="jWN-fx-eYb" secondAttribute="trailing" constant="20" symbolic="YES" id="OtL-HW-gjd"/>
+                            <constraint firstItem="12I-kT-HWw" firstAttribute="leading" secondItem="k35-KA-xGy" secondAttribute="trailing" constant="8" symbolic="YES" id="E0t-xh-xzs"/>
+                            <constraint firstItem="e4h-zy-gbp" firstAttribute="baseline" secondItem="jWN-fx-eYb" secondAttribute="baseline" id="E2H-Fy-ZI1"/>
+                            <constraint firstItem="k35-KA-xGy" firstAttribute="leading" secondItem="e4h-zy-gbp" secondAttribute="trailing" constant="8" symbolic="YES" id="Egy-7p-OGy"/>
+                            <constraint firstItem="12I-kT-HWw" firstAttribute="width" secondItem="jWN-fx-eYb" secondAttribute="width" id="NWI-up-MKv"/>
                             <constraint firstItem="jWN-fx-eYb" firstAttribute="top" secondItem="gp9-cY-Yzw" secondAttribute="bottom" constant="8" symbolic="YES" id="QkR-5r-SsF"/>
+                            <constraint firstItem="k35-KA-xGy" firstAttribute="width" secondItem="jWN-fx-eYb" secondAttribute="width" id="SJR-FO-ii3"/>
                             <constraint firstItem="gp9-cY-Yzw" firstAttribute="top" secondItem="LdB-kQ-N1I" secondAttribute="bottom" constant="8" symbolic="YES" id="SP1-yt-rJy"/>
                             <constraint firstAttribute="trailing" secondItem="gp9-cY-Yzw" secondAttribute="trailing" constant="20" symbolic="YES" id="Sd2-eo-qOe"/>
                             <constraint firstItem="LdB-kQ-N1I" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="SgP-Pn-cmN"/>
+                            <constraint firstItem="12I-kT-HWw" firstAttribute="leading" secondItem="k35-KA-xGy" secondAttribute="trailing" constant="8" symbolic="YES" id="Tjy-DO-L63"/>
                             <constraint firstAttribute="trailing" secondItem="LdB-kQ-N1I" secondAttribute="trailing" constant="20" symbolic="YES" id="Xao-hh-ssX"/>
+                            <constraint firstItem="k35-KA-xGy" firstAttribute="baseline" secondItem="jWN-fx-eYb" secondAttribute="baseline" id="bct-38-7N0"/>
+                            <constraint firstItem="12I-kT-HWw" firstAttribute="baseline" secondItem="jWN-fx-eYb" secondAttribute="baseline" id="cjq-4p-aBB"/>
+                            <constraint firstAttribute="trailing" secondItem="12I-kT-HWw" secondAttribute="trailing" constant="20" symbolic="YES" id="dPn-UX-z0C"/>
                             <constraint firstItem="4FW-K3-hAp" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="mts-TB-4FK"/>
+                            <constraint firstItem="k35-KA-xGy" firstAttribute="leading" secondItem="e4h-zy-gbp" secondAttribute="trailing" constant="8" symbolic="YES" id="pmd-D5-K8i"/>
                             <constraint firstAttribute="trailing" secondItem="4FW-K3-hAp" secondAttribute="trailing" constant="20" symbolic="YES" id="spR-71-QgT"/>
                             <constraint firstItem="4FW-K3-hAp" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="vJs-LQ-C8P"/>
                             <constraint firstItem="jWN-fx-eYb" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="x0l-X3-IKf"/>
@@ -1148,6 +1183,8 @@
                         <outlet property="bestStatField" destination="srM-uh-mTF" id="bli-nX-NyT"/>
                         <outlet property="cpField" destination="wKx-17-Gmc" id="tGz-d0-NVg"/>
                         <outlet property="dustField" destination="BBa-ho-dUv" id="cUt-4R-M8b"/>
+                        <outlet property="gen1Label" destination="k35-KA-xGy" id="DZQ-Yj-TPP"/>
+                        <outlet property="gen2Label" destination="12I-kT-HWw" id="bSu-Lq-Um8"/>
                         <outlet property="hpField" destination="yLh-98-Tdp" id="Ex4-WT-GqG"/>
                         <outlet property="isAttBestField" destination="8JU-NB-F6X" id="NQa-k5-cqg"/>
                         <outlet property="isDefBestField" destination="lUT-yy-jc2" id="5wS-3T-LNU"/>
@@ -1155,8 +1192,9 @@
                         <outlet property="isPoweredUpField" destination="psR-Y2-BIL" id="nGo-ZH-B8W"/>
                         <outlet property="pokémonField" destination="uj5-0D-1zC" id="OAd-C9-K1j"/>
                         <outlet property="resultLabel" destination="AYh-VL-zSX" id="nAa-RJ-wbu"/>
-                        <outlet property="statusLabel" destination="jWN-fx-eYb" id="myk-17-gpZ"/>
                         <outlet property="tableView" destination="wn5-7k-h6m" id="6P8-fe-Nrf"/>
+                        <outlet property="totalPokémonLabel" destination="jWN-fx-eYb" id="dlW-K1-AtX"/>
+                        <outlet property="totalSpeciesLabel" destination="e4h-zy-gbp" id="jIz-5q-Ikg"/>
                         <outlet property="trainerLevelField" destination="vhY-P9-sqr" id="r3c-Hl-sr2"/>
                     </connections>
                 </viewController>

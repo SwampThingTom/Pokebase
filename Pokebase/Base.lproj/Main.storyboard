@@ -1101,6 +1101,7 @@
                                             <connections>
                                                 <outlet property="dataSource" destination="XfG-lQ-9wD" id="BG0-7g-LLx"/>
                                                 <outlet property="delegate" destination="XfG-lQ-9wD" id="a2k-BL-4e4"/>
+                                                <outlet property="menu" destination="cs8-PC-hq2" id="Wb1-Pt-TSN"/>
                                             </connections>
                                         </tableView>
                                     </subviews>
@@ -1199,8 +1200,79 @@
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu id="cs8-PC-hq2">
+                    <items>
+                        <menuItem title="Item 1" id="Sog-78-Dle">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem title="Item 2" id="eOX-Hb-wMk">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem title="Item 3" id="7Ri-ax-89H">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                    </items>
+                    <connections>
+                        <outlet property="delegate" destination="XfG-lQ-9wD" id="x07-UK-NuE"/>
+                    </connections>
+                </menu>
             </objects>
             <point key="canvasLocation" x="75" y="1171"/>
+        </scene>
+        <!--Power Up Evolve View Controller-->
+        <scene sceneID="tU6-4A-1LS">
+            <objects>
+                <viewController storyboardIdentifier="PowerUpEvolve" id="t2H-mR-xm7" customClass="PowerUpEvolveViewController" customModule="Pokebase" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="YBa-Gt-ikn">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yR3-kt-imI">
+                                <rect key="frame" x="18" y="263" width="414" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Pokemon" id="Tw0-em-V60">
+                                    <font key="font" metaFont="systemBold"/>
+                                    <color key="textColor" red="0.0" green="0.25098040700000002" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Wlf-dG-dSe">
+                                <rect key="frame" x="26" y="13" width="81" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Lj8-bq-NOx">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="cancel:" target="t2H-mR-xm7" id="zuf-r7-JIV"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Dzj-1y-Ie1">
+                                <rect key="frame" x="355" y="13" width="81" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="OK" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="npP-eM-LXb">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="ok:" target="t2H-mR-xm7" id="Wpe-xg-eeZ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="species" destination="yR3-kt-imI" id="jF0-zU-inT"/>
+                    </connections>
+                </viewController>
+                <customObject id="nmb-mp-rBx" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4" y="1746"/>
         </scene>
     </scenes>
     <resources>

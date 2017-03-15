@@ -10,6 +10,7 @@
 		1C05634E6CF0AEF7597E1198 /* Pods_Pokebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B82F860DE83DFD71222BB5AE /* Pods_Pokebase.framework */; };
 		7911363B077EE8DD9145D3B2 /* Pods_PokebaseTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18D32F3F0DF2C1B336FB31C5 /* Pods_PokebaseTests.framework */; };
 		B03B107096E174F4B43209AC /* Pods_PokebaseUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9259E7CCB900125B7CB11167 /* Pods_PokebaseUITests.framework */; };
+		E20A14E51E6AF0E60056176C /* PowerUpEvolveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20A14E41E6AF0E60056176C /* PowerUpEvolveViewController.swift */; };
 		E2569F4F1E156B1C00224956 /* PokémonImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2569F4E1E156B1C00224956 /* PokémonImporter.swift */; };
 		E25B39101E16B1EB00E0D446 /* StatsAppraisal.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25B390F1E16B1EB00E0D446 /* StatsAppraisal.swift */; };
 		E274B1611DFDA28700160096 /* Pokémon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E274B1601DFDA28700160096 /* Pokémon.swift */; };
@@ -52,6 +53,7 @@
 		9259E7CCB900125B7CB11167 /* Pods_PokebaseUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PokebaseUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B82F860DE83DFD71222BB5AE /* Pods_Pokebase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pokebase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4D511DE9CDE220D98638A69 /* Pods-PokebaseUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PokebaseUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PokebaseUITests/Pods-PokebaseUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		E20A14E41E6AF0E60056176C /* PowerUpEvolveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PowerUpEvolveViewController.swift; sourceTree = "<group>"; };
 		E2569F4E1E156B1C00224956 /* PokémonImporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PokémonImporter.swift"; sourceTree = "<group>"; };
 		E25B390F1E16B1EB00E0D446 /* StatsAppraisal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsAppraisal.swift; sourceTree = "<group>"; };
 		E274B1601DFDA28700160096 /* Pokémon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Pokémon.swift"; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 			children = (
 				E2ED37231DFC52FB00705551 /* AppDelegate.swift */,
 				E2ED37251DFC52FB00705551 /* ViewController.swift */,
+				E20A14E41E6AF0E60056176C /* PowerUpEvolveViewController.swift */,
 				E274B1661E01790E00160096 /* PokémonBox.swift */,
 				E2569F4E1E156B1C00224956 /* PokémonImporter.swift */,
 				E274B1601DFDA28700160096 /* Pokémon.swift */,
@@ -468,6 +471,7 @@
 			files = (
 				E274B1611DFDA28700160096 /* Pokémon.swift in Sources */,
 				E2ED37521DFC727400705551 /* Species.swift in Sources */,
+				E20A14E51E6AF0E60056176C /* PowerUpEvolveViewController.swift in Sources */,
 				E2ED37261DFC52FB00705551 /* ViewController.swift in Sources */,
 				E274B1651E00224100160096 /* IVCalculator.swift in Sources */,
 				E2ED37241DFC52FB00705551 /* AppDelegate.swift in Sources */,

@@ -8,7 +8,7 @@
 
 import Cocoa
 
-class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBoxDataSource, NSComboBoxDelegate, NSTableViewDelegate, NSTableViewDataSource {
+class ViewController: NSViewController, PowerUpEvolveDelegate, NSControlTextEditingDelegate, NSComboBoxDataSource, NSComboBoxDelegate, NSTableViewDelegate, NSTableViewDataSource, NSMenuDelegate {
 
     @IBOutlet weak var trainerLevelField: NSTextField!
     @IBOutlet weak var pokémonField: NSComboBox!
@@ -488,5 +488,69 @@ class ViewController: NSViewController, NSControlTextEditingDelegate, NSComboBox
         let a1 = a * (0.5 - percent)
         let b1 = b * (percent)
         return (a1 + b1) * 2.0
+    }
+    
+    /// MARK: - Context menu
+    
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        let row = tableView.clickedRow
+        if row < 0 {
+            return
+        }
+        
+        menu.removeAllItems()
+        menu.addItem(menuItem(forRow: row, title: "Power Up", action: #selector(powerUp)))
+        menu.addItem(menuItem(forRow: row, title: "Evolve", action: #selector(evolve)))
+    }
+    
+    private func menuItem(forRow pokémonIndex: Int, title: String, action: Selector) -> NSMenuItem {
+        let menuItem = NSMenuItem(title: title, action: action, keyEquivalent: "")
+        menuItem.target = self
+        menuItem.tag = pokémonIndex
+        return menuItem
+    }
+    
+    func powerUp(sender: NSMenuItem) {
+        let pokémon = savedPokémon[sender.tag]
+        displayPowerUpViewController(for: pokémon)
+        
+        /*
+        let alert: NSAlert = NSAlert()
+        alert.messageText = "Power Up"
+        alert.informativeText = "Power up \(pokémon.species)?"
+        alert.alertStyle = NSAlertStyle.warning
+        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Cancel")
+        if alert.runModal() == NSAlertFirstButtonReturn {
+            // TODO: Power up and update
+        }
+        */
+    }
+    
+    func evolve(sender: NSMenuItem) {
+        
+    }
+    
+    /// MARK: - 
+    
+    lazy var powerUpEvolveViewController: PowerUpEvolveViewController = {
+        return self.storyboard!.instantiateController(withIdentifier: "PowerUpEvolve") as! PowerUpEvolveViewController
+    }()
+    
+    func displayPowerUpViewController(for pokémon: Pokémon) {
+        let powerUpViewController = powerUpEvolveViewController
+        powerUpViewController.title = "Power Up"
+        powerUpViewController.delegate = self
+        powerUpViewController.pokémon = pokémon
+        presentViewControllerAsSheet(powerUpEvolveViewController)
+    }
+    
+    func cancelPowerUpEvolve() {
+        dismissViewController(powerUpEvolveViewController)
+    }
+    
+    func updateAfterPowerUpEvolve(pokémon: Pokémon) {
+        // TODO:
+        dismissViewController(powerUpEvolveViewController)
     }
 }
